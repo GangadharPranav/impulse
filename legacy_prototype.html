@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0" name="viewport"/>
+  <title>IMPULSE — Kinetic Motion & Tactical Crisis Arena</title>
+  <meta name="description" content="Unrehearsed corporate crises, hostile press pools, and high-velocity spontaneous debates in an unscripted combat arena."/>
+  
+  <!-- Modern Typography: Syne, Space Grotesk, Space Mono, Hanken Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Three.js for Interactive 3D Physics Fidgets (creativeclub.dev style) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- Tailwind CDN with Extended Design Tokens -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "obsidian-deep": "#080412",
+            "obsidian-card": "#120B24",
+            "obsidian-elevated": "#1A1033",
+            "border-raw": "#321D66",
+            "border-bright": "#5835B0",
+            "neon-lime": "#CEFF00",
+            "neon-lime-muted": "#A6CF00",
+            "hot-magenta": "#FF2D78",
+            "electric-cobalt": "#2563EB",
+            "electric-lilac": "#D9B8FF",
+            "amber-flare": "#FFD026",
+            "text-chalk": "#F7F5FF",
+            "text-muted": "#968AB8"
+          },
+          fontFamily: {
+            display: ["Syne", "sans-serif"],
+            headline: ["Space Grotesk", "sans-serif"],
+            mono: ["Space Mono", "monospace"],
+            body: ["Hanken Grotesk", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+        background-color: #080412;
+        color: #F7F5FF;
+        overflow-x: hidden;
+      }
+    }
+    ::-webkit-scrollbar { display: none; }
+
+    /* ==========================================================================
+       1. AGENCE FOUDRE / AGENCYSIDE PRELOADER TRANSITION
+       ========================================================================== */
+    #site-preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #080412;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.6s ease;
+      will-change: transform;
+    }
+    #site-preloader.loaded {
+      transform: translateY(-100%);
+      pointer-events: none;
+    }
+    .svg-draw-stroke {
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: drawSvg 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+    @keyframes drawSvg {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* ==========================================================================
+       2. TYPOGRAPHIC REVEALS & KINETIC WAVE (Agence Foudre & Creative Club)
+       ========================================================================== */
+    .mask-line {
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .reveal-up {
+      display: inline-block;
+      transform: translateY(115%);
+      opacity: 0;
+      transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+      will-change: transform, opacity;
+    }
+    .reveal-up.is-inview {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+
+    /* Kinetic Letters with hover spring */
+    .kinetic-letter {
+      display: inline-block;
+      cursor: pointer;
+      will-change: transform, color, text-shadow;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, text-shadow 0.25s ease;
+    }
+    .kinetic-letter:hover {
+      transform: translateY(-16px) scale(1.18) rotate(var(--rot, 5deg));
+      color: #CEFF00 !important;
+      text-shadow: 0 0 24px rgba(206, 255, 0, 0.85), 4px 4px 0px #000000;
+    }
+
+    /* ==========================================================================
+       3. SPINNABLE CIRCULAR BADGES (agencyside.org Style)
+       ========================================================================== */
+    .spinnable-badge {
+      animation: spinContinuous 24s linear infinite;
+      transform-origin: center;
+      will-change: transform;
+    }
+    .spinnable-badge:hover {
+      animation-duration: 7s;
+    }
+    @keyframes spinContinuous {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ==========================================================================
+       4. RETRO TV FRAME & CRT EFFECT (agencyside.org Style)
+       ========================================================================== */
+    .retro-tv-casing {
+      background: radial-gradient(circle at 50% 30%, #201438 0%, #100820 100%);
+      border: 6px solid #3E2382;
+      box-shadow: 14px 14px 0px #000000, inset 0 2px 8px rgba(255,255,255,0.15);
+      border-radius: 2.2rem;
+      position: relative;
+    }
+    .retro-tv-screen {
+      border-radius: 1.4rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.85), inset 0 0 10px rgba(206,255,0,0.2);
+    }
+    .retro-tv-screen::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+      background-size: 100% 4px, 6px 100%;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .retro-tv-screen::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 60%, rgba(8, 4, 18, 0.75) 100%);
+      z-index: 21;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       5. 3D FLIP CARDS & TILT PHYSICS
+       ========================================================================== */
+    .flip-perspective-zone {
+      perspective: 1200px;
+    }
+    .arena-tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.34, 1.3, 0.64, 1), box-shadow 0.35s ease, opacity 0.5s ease;
+      will-change: transform;
+    }
+    .arena-tilt-card.init-flipped {
+      opacity: 0;
+      transform: perspective(1000px) rotateY(-180deg) scale(0.85);
+    }
+    .arena-tilt-card.revealed-flipped {
+      opacity: 1;
+      transform: perspective(1000px) rotateY(0deg) scale(1);
+    }
+    .arena-tilt-card:hover {
+      box-shadow: 16px 16px 0px #000000;
+    }
+
+    /* ==========================================================================
+       6. CORNER HUD NAVIGATION & SPRING BUTTONS (Agence Foudre Style)
+       ========================================================================== */
+    .hud-circle-btn {
+      transition: transform 0.4s cubic-bezier(0.17, 0.67, 0.3, 1.33), background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+      will-change: transform;
+    }
+    .hud-circle-btn:hover {
+      transform: scale(1.12) rotate(var(--rot, 0deg));
+    }
+    .hud-circle-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* ==========================================================================
+       7. LIVING MASCOT SQUASH & PUPILS
+       ========================================================================== */
+    .mascot-squash {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .mascot-squash:hover {
+      transform: scale(1.1, 0.92) rotate(-4deg);
+    }
+    .mascot-squash:active {
+      transform: scale(0.88, 1.2) rotate(5deg);
+    }
+    @keyframes mascotBlink {
+      0%, 93%, 100% { transform: scaleY(1); }
+      95%, 97% { transform: scaleY(0.08); }
+    }
+    .eye-blink-anim {
+      transform-origin: center;
+      animation: mascotBlink 4.5s infinite ease-in-out;
+    }
+
+    /* ==========================================================================
+       8. MARQUEE & EQUALIZER
+       ========================================================================== */
+    @keyframes marqueeScroll {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    .marquee-infinite {
+      display: flex;
+      width: 200%;
+      animation: marqueeScroll 20s linear infinite;
+    }
+    .marquee-infinite:hover { animation-play-state: paused; }
+
+    @keyframes eqBarA { 0%, 100% { height: 4px; } 50% { height: 22px; } }
+    @keyframes eqBarB { 0%, 100% { height: 18px; } 50% { height: 6px; } }
+    @keyframes eqBarC { 0%, 100% { height: 8px; } 50% { height: 26px; } }
+    @keyframes eqBarD { 0%, 100% { height: 24px; } 50% { height: 10px; } }
+    .eq-1 { animation: eqBarA 0.75s ease-in-out infinite; }
+    .eq-2 { animation: eqBarB 0.6s ease-in-out infinite 0.15s; }
+    .eq-3 { animation: eqBarC 0.9s ease-in-out infinite 0.3s; }
+    .eq-4 { animation: eqBarD 0.65s ease-in-out infinite 0.2s; }
+
+    /* Floating sticker badge physics */
+    @keyframes badgeFloatAnim {
+      0%, 100% { transform: translateY(0px) rotate(var(--b-rot, 0deg)); }
+      50% { transform: translateY(-10px) rotate(calc(var(--b-rot, 0deg) + 3deg)); }
+    }
+    .sticker-float {
+      animation: badgeFloatAnim 4.8s ease-in-out infinite;
+    }
+
+    /* 3D Canvas Canvas Styling */
+    #fidget-canvas-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #fidget-canvas-container canvas {
+      pointer-events: auto;
+    }
+  </style>
+</head>
+
+<body class="bg-obsidian-deep text-text-chalk font-body antialiased min-h-screen selection:bg-neon-lime selection:text-obsidian-deep">
+
+  <!-- =========================================================================
+       1. AGENCE FOUDRE FULL-SCREEN INTRO PRELOADER
+       ========================================================================= -->
+  <div id="site-preloader">
+    <div class="flex flex-col items-center gap-6 text-center max-w-sm px-6">
+      <div class="relative w-28 h-28 flex items-center justify-center">
+        <!-- SVG Animated Brand Icon -->
+        <svg class="w-full h-full drop-shadow-[0_0_25px_rgba(206,255,0,0.6)]" viewBox="0 0 100 100">
+          <polygon class="svg-draw-stroke" points="50,4 62,35 96,25 78,55 96,80 62,70 50,96 38,70 4,80 22,55 4,25 38,35" 
+                   fill="none" stroke="#CEFF00" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="50" cy="50" r="12" fill="#CEFF00" class="animate-ping opacity-40"/>
+          <circle cx="50" cy="50" r="7" fill="#CEFF00"/>
+        </svg>
+      </div>
+
+      <div class="space-y-1">
+        <span class="font-display text-4xl uppercase tracking-tighter text-text-chalk">IMPULSE<span class="text-neon-lime">.</span></span>
+        <p class="font-mono text-xs uppercase tracking-widest text-text-muted" id="preloader-text">CALIBRATING CRITICAL MASS</p>
+      </div>
+
+      <!-- Live Loading Telemetry Bar -->
+      <div class="w-48 h-1.5 bg-obsidian-elevated rounded-full overflow-hidden border border-border-raw">
+        <div id="preloader-bar" class="h-full bg-neon-lime transition-all duration-150" style="width: 0%;"></div>
+      </div>
+      <div class="flex justify-between w-48 text-[11px] font-mono text-neon-lime">
+        <span>SYS // V4.2</span>
+        <span id="preloader-percent">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       2. FIXED CORNER HUD INTERFACES (Agence Foudre & Creative Club Style)
+       ========================================================================= -->
+  <!-- TOP-LEFT: Sound Synthesizer & Audio FX Toggle -->
+  <div class="fixed top-5 left-5 md:top-7 md:left-8 z-50">
+    <button id="sound-toggle-btn" class="hud-circle-btn px-4 py-2 bg-obsidian-card/90 backdrop-blur-md border-2 border-border-raw hover:border-neon-lime text-neon-lime rounded-full flex items-center gap-2 font-mono text-xs shadow-[4px_4px_0px_#000000]">
+      <span class="material-symbols-outlined text-[16px]" id="sound-icon">volume_up</span>
+      <span class="font-bold tracking-wider uppercase text-[10px]" id="sound-label">FX ON</span>
+    </button>
+  </div>
+
+  <!-- TOP-CENTER: Pinned Brand Wordmark with Adaptive Rotate -->
+  <div class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+    <a href="#" class="group flex items-center gap-2 px-5 py-2 rounded-full bg-obsidian-deep/90 backdrop-blur-xl border-2 border-border-raw/70 hover:border-neon-lime transition-all shadow-[4px_4px_0px_#000000]">
+      <span class="w-2.5 h-2.5 rounded-full bg-neon-lime animate-pulse"></span>
+      <span class="font-display text-2xl tracking-tight text-text-chalk uppercase group-hover:text-neon-lime transition-colors">IMPULSE</span>
+      <span class="font-mono text-[10px] text-electric-lilac px-2 py-0.5 rounded bg-surface-violet border border-border-raw font-bold">2026</span>
+    </a>
+  </div>
+
+  <!-- TOP-RIGHT: Live War Room Clock & Cadence Status -->
+  <div class="fixed top-5 right-5 md:top-7 md:right-8 z-50">
+    <div class="hidden sm:flex items-center gap-2.5 px-4 py-2 bg-obsidian-card/90 backdrop-blur-md border-2 border-border-raw rounded-full font-mono text-[11px] shadow-[4px_4px_0px_#000000]">
+      <span class="w-2 h-2 rounded-full bg-hot-magenta animate-ping"></span>
+      <span class="text-text-muted uppercase">NYC</span>
+      <span class="text-neon-lime font-bold" id="live-utc-clock">14:00:00</span>
+      <span class="text-border-raw">|</span>
+      <span class="text-electric-lilac font-bold">100% UNREHEARSED</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM-LEFT: Circular Directory / Archive Menu Trigger -->
+  <div class="fixed bottom-6 left-5 md:bottom-8 md:left-8 z-50">
+    <button id="open-menu-btn" class="hud-circle-btn w-14 h-14 rounded-full bg-neon-lime text-obsidian-deep font-display font-black text-xl border-2 border-obsidian-deep shadow-[5px_5px_0px_#000000] flex items-center justify-center cursor-pointer group" title="Open Menu Archive">
+      <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform">grid_view</span>
+    </button>
+  </div>
+
+  <!-- BOTTOM-RIGHT: Magnetic Spring Enter Arena / Audition CTA -->
+  <div class="fixed bottom-6 right-5 md:bottom-8 md:right-8 z-50">
+    <button id="enter-arena-btn" class="hud-circle-btn px-6 py-3.5 rounded-full bg-hot-magenta text-text-chalk border-2 border-obsidian-deep font-headline font-black text-xs uppercase tracking-widest shadow-[6px_6px_0px_#000000] flex items-center gap-2 hover:scale-105 active:scale-95 cursor-pointer">
+      <span>CLAIM AUDITION</span>
+      <span class="material-symbols-outlined text-[18px]">bolt</span>
+    </button>
+  </div>
+
+  <!-- =========================================================================
+       3. FULL-SCREEN INTERACTIVE DIRECTORY DRAWER (Agence Foudre & Agency Side)
+       ========================================================================= -->
+  <div id="directory-drawer" class="fixed inset-0 z-[60] bg-obsidian-deep/95 backdrop-blur-2xl hidden flex-col justify-between p-6 sm:p-12 transition-all">
+    <div class="flex items-center justify-between border-b-2 border-border-raw pb-6">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full bg-neon-lime animate-ping"></span>
+        <span class="font-mono text-xs uppercase text-neon-lime tracking-widest">// IMPULSE ARCHIVE DIRECTORY</span>
+      </div>
+      <button id="close-menu-btn" class="w-12 h-12 rounded-full bg-obsidian-card border border-border-raw text-text-chalk flex items-center justify-center hover:bg-hot-magenta hover:text-white transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
+    </div>
+
+    <!-- Monolithic Nav Links -->
+    <nav class="flex flex-col justify-center space-y-4 my-auto max-w-4xl mx-auto w-full">
+      <a href="#hero-stage" class="drawer-link group flex items-baseline justify-between py-2 border-b border-border-raw/40 hover:border-neon-lime transition-all">
+        <span class="font-display text-4xl sm:text-7xl uppercase text-text-chalk group-hover:text-neon-lime group-hover:translate-x-4 transition-all">01. FLAGSHIP ARENA</span>
+        <span class="font-mono text-xs text-text-muted group-hover:text-neon-lime uppercase tracking-widest">[STAGE // REC]</span>
+      </a>
+      <a href="#doctrine-manifesto" class="drawer-link group flex items-baseline justify-between py-2 border-b border-border-raw/40 hover:border-electric-lilac transition-all">
+        <span class="font-display text-4xl sm:text-7xl uppercase text-text-chalk group-hover:text-electric-lilac group-hover:translate-x-4 transition-all">02. RADICAL DOCTRINE</span>
+        <span class="font-mono text-xs text-text-muted group-hover:text-electric-lilac uppercase tracking-widest">[THESIS &amp; METRICS]</span>
+      </a>
+      <a href="#arena-tracks" class="drawer-link group flex items-baseline justify-between py-2 border-b border-border-raw/40 hover:border-hot-magenta transition-all">
+        <span class="font-display text-4xl sm:text-7xl uppercase text-text-chalk group-hover:text-hot-magenta group-hover:translate-x-4 transition-all">03. ACTIVE TRACKS</span>
+        <span class="font-mono text-xs text-text-muted group-hover:text-hot-magenta uppercase tracking-widest">[3 UNREHEARSED SIMS]</span>
+      </a>
+      <a href="#retro-debriefs" class="drawer-link group flex items-baseline justify-between py-2 border-b border-border-raw/40 hover:border-amber-flare transition-all">
+        <span class="font-display text-4xl sm:text-7xl uppercase text-text-chalk group-hover:text-amber-flare group-hover:translate-x-4 transition-all">04. RETRO DEBRIEFS</span>
+        <span class="font-mono text-xs text-text-muted group-hover:text-amber-flare uppercase tracking-widest">[CRT DOSSIERS]</span>
+      </a>
+      <a href="#psychometric-section" class="drawer-link group flex items-baseline justify-between py-2 border-b border-border-raw/40 hover:border-neon-lime transition-all">
+        <span class="font-display text-4xl sm:text-7xl uppercase text-text-chalk group-hover:text-neon-lime group-hover:translate-x-4 transition-all">05. CADENCE CALIBRATION</span>
+        <span class="font-mono text-xs text-text-muted group-hover:text-neon-lime uppercase tracking-widest">[PSYCHOMETRIC VIBE]</span>
+      </a>
+    </nav>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-border-raw font-mono text-xs text-text-muted">
+      <span>SHORTCUTS: [ESC] TO CLOSE • [CLICK TRACK] TO DISPATCH</span>
+      <span class="text-neon-lime font-bold">100% LIVE ZERO PPT PROTOCOL</span>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       4. HERO SECTION: MONOLITHIC KINETIC TYPOGRAPHY + THREE.JS PHYSICS SANDBOX
+       ========================================================================= -->
+  <section id="hero-stage" class="relative w-full min-h-screen pt-28 pb-20 px-6 lg:px-12 flex flex-col items-center justify-center text-center overflow-hidden">
+    
+    <!-- CREATIVE CLUB 3D PHYSICS CANVAS OVERLAY (Draggable/Tossable Tactical Shapes) -->
+    <div id="fidget-canvas-container"></div>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="absolute top-1/4 left-1/4 w-[480px] h-[480px] rounded-full bg-electric-cobalt/15 blur-[140px] pointer-events-none -z-10"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[420px] h-[420px] rounded-full bg-hot-magenta/15 blur-[120px] pointer-events-none -z-10"></div>
+
+    <div class="w-full max-w-7xl mx-auto relative z-20 flex flex-col items-center">
+      
+      <!-- Agencyside Spinnable Circular Badge (Top-Left Floating Pin) -->
+      <div class="hidden lg:block absolute -top-12 left-6 z-20 cursor-pointer group sticker-float" style="--b-rot: -6deg;" title="Continuous Spinnable Badge">
+        <div class="relative w-36 h-36 flex items-center justify-center">
+          <svg class="w-full h-full spinnable-badge" viewBox="0 0 200 200">
+            <path id="badge-circle-path" d="M 100, 100 m -70, 0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" fill="none"/>
+            <text class="font-mono font-bold text-[13px] uppercase fill-neon-lime tracking-[0.2em]">
+              <textPath href="#badge-circle-path">
+                • IMPULSE ARENA • ZERO SCRIPT • 100% LIVE •
+              </textPath>
+            </text>
+          </svg>
+          <div class="absolute w-14 h-14 rounded-full bg-neon-lime text-obsidian-deep border-2 border-obsidian-deep flex items-center justify-center font-display font-black text-xl shadow-[3px_3px_0px_#000000] group-hover:scale-110 transition-transform">
+            ⚡
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Live Dispatch Chip -->
+      <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-obsidian-card border border-border-raw mb-6 shadow-[4px_4px_0px_#000000] hover:border-neon-lime transition-all cursor-pointer">
+        <span class="flex items-center gap-1.5 mr-1">
+          <span class="w-2 h-2 rounded-full bg-hot-magenta animate-ping"></span>
+          <span class="font-mono text-[11px] font-bold text-hot-magenta uppercase tracking-widest">LIVE SIMULATION PODIUM</span>
+        </span>
+        <span class="text-border-raw">|</span>
+        <span class="font-mono text-xs text-electric-lilac uppercase font-bold">ZERO PPT SLIDES // 4.9/5 RATING</span>
+      </div>
+
+      <!-- Monolithic Display Headline (Agence Foudre & Creative Club scale) -->
+      <div class="relative flex flex-col items-center justify-center select-none">
+        <h1 class="font-display text-[58px] sm:text-[96px] md:text-[124px] lg:text-[144px] leading-[0.84] tracking-tight uppercase font-black text-text-chalk drop-shadow-[0_6px_30px_rgba(0,0,0,0.8)]" id="hero-headline">
+          
+          <!-- Line 1: COMMUNICATORS -->
+          <div class="mask-line">
+            <span class="reveal-up is-inview block">
+              <span class="kinetic-letter" style="--rot:-4deg;">C</span><span class="kinetic-letter" style="--rot:4deg;">O</span><span class="kinetic-letter" style="--rot:-3deg;">M</span><span class="kinetic-letter" style="--rot:5deg;">M</span><span class="kinetic-letter" style="--rot:-5deg;">U</span><span class="kinetic-letter" style="--rot:3deg;">N</span><span class="kinetic-letter" style="--rot:-4deg;">I</span><span class="kinetic-letter" style="--rot:6deg;">C</span><span class="kinetic-letter" style="--rot:-3deg;">A</span><span class="kinetic-letter" style="--rot:5deg;">T</span><span class="kinetic-letter" style="--rot:-4deg;">O</span><span class="kinetic-letter" style="--rot:4deg;">R</span><span class="kinetic-letter" style="--rot:-5deg;">S</span>
+            </span>
+          </div>
+
+          <!-- Line 2: PEOPLE TRUST -->
+          <div class="mask-line my-2">
+            <span class="reveal-up is-inview flex flex-wrap items-center justify-center gap-3 md:gap-6">
+              <span class="text-electric-lilac">PEOPLE</span>
+              <span class="inline-block px-6 py-1.5 bg-neon-lime text-obsidian-deep -rotate-3 hover:rotate-6 hover:scale-110 transition-all shadow-[6px_6px_0px_#000000] border-3 border-obsidian-deep rounded-full font-display text-[38px] md:text-[62px] leading-none cursor-pointer group">
+                <span class="inline-block group-hover:scale-105 transition-transform">TRUST.</span>
+              </span>
+            </span>
+          </div>
+
+          <!-- Line 3: DESIGNED TO WIN -->
+          <div class="mask-line">
+            <span class="reveal-up is-inview flex flex-wrap items-center justify-center gap-4">
+              <span class="italic text-electric-cobalt underline decoration-hot-magenta decoration-4 md:decoration-8 hover:text-hot-magenta transition-colors inline-block hover:scale-105 hover:-rotate-2">DESIGNED</span>
+              <span>
+                <span class="kinetic-letter" style="--rot:-3deg;">T</span><span class="kinetic-letter" style="--rot:4deg;">O</span>
+                <span class="inline-block w-4"></span>
+                <span class="kinetic-letter text-neon-lime" style="--rot:6deg;">W</span><span class="kinetic-letter text-neon-lime" style="--rot:-5deg;">I</span><span class="kinetic-letter text-neon-lime" style="--rot:4deg;">N</span><span class="kinetic-letter text-neon-lime" style="--rot:-3deg;">.</span>
+              </span>
+            </span>
+          </div>
+        </h1>
+
+        <!-- Floating Interactive Badges with Float Physics -->
+        <div class="hidden lg:flex absolute bottom-4 -left-8 sticker-float bg-obsidian-card text-neon-lime px-4 py-2 rounded-full font-mono text-xs border-2 border-neon-lime shadow-[5px_5px_0px_#000000] cursor-pointer hover:scale-110 transition-transform" style="--b-rot: -5deg;">
+          ⚡ SPEED OVER PROTOCOL
+        </div>
+        <div class="hidden lg:flex absolute top-16 -right-6 sticker-float bg-electric-cobalt text-text-chalk px-4 py-2 rounded-full font-mono text-xs border-2 border-obsidian-deep shadow-[5px_5px_0px_#000000] cursor-pointer hover:scale-110 transition-transform" style="--b-rot: 6deg;">
+          🎙️ HOSTILE PRESS READY
+        </div>
+      </div>
+
+      <!-- Subtitle & Action Trigger -->
+      <div class="mt-8 max-w-2xl mx-auto space-y-6">
+        <p class="text-base sm:text-lg text-text-muted leading-relaxed font-body">
+          Fostering bold ideas, mastering high-stakes public pressure, and proving authentic enterprise value. 
+          Unrehearsed corporate crises, hostile press pools, and high-velocity spontaneous debates in an unscripted combat arena.
+        </p>
+
+        <!-- Interactive 3D Fidget Hint (creativeclub.dev) -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-obsidian-elevated rounded-full border border-border-raw font-mono text-[11px] text-neon-lime">
+          <span class="material-symbols-outlined text-[15px]">touch_app</span>
+          <span>TIP: CLICK &amp; DRAG THE 3D TOKENS FLOATING IN THE BACKGROUND!</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <a href="#arena-tracks" class="px-8 py-4 rounded-full bg-neon-lime text-obsidian-deep font-headline text-sm uppercase tracking-wider font-black shadow-[6px_6px_0px_#000000] hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group">
+            <span>EXPLORE ACTIVE ARENAS</span>
+            <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
+          </a>
+          <a href="#retro-debriefs" class="px-8 py-4 rounded-full bg-obsidian-card text-electric-lilac border-2 border-electric-lilac font-headline text-sm uppercase tracking-wider font-bold shadow-[5px_5px_0px_#000000] hover:bg-electric-lilac hover:text-obsidian-deep hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+            <span>INSPECT DEBRIEFS</span>
+            <span class="material-symbols-outlined text-[18px]">tv</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Banner Hero Dossier with Audio Bars (Agence Foudre atmosphere) -->
+      <div class="mt-14 w-full relative rounded-2xl overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.85)] border-3 border-border-raw group cursor-pointer">
+        <img alt="IMPULSE Tactical Simulation" class="w-full h-72 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AEtjO1WQIaLaMIUt878KqiGMXOgMFv5uDBOqhM28xz3xmkYRIlB3XKW4dkAqD0ty0fOMGddWsS4pmrbJZkqLhofGjUxuN-pvvcX__gHZiq7zCNW_JR7j5q9B0L5V53PjSUfJk2ahuyHn9_PuSR5dC4YoxJpW-bFl6_IRbb25VDvRGkJQ4LowKIpU2rqkC-EaIJUW0fe3wHHCoFJ9YYAsCus9tcUgWzNvHidXJsNI7MahM5hF5XPmk-OOBNpQh9A"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-obsidian-deep via-obsidian-deep/30 to-transparent"></div>
+        
+        <!-- Live Audio Wave Monitor -->
+        <div class="absolute top-5 right-6 flex items-center gap-1.5 bg-obsidian-deep/90 backdrop-blur-md px-4 py-2 rounded-full border border-neon-lime/40">
+          <span class="font-mono text-[11px] text-neon-lime uppercase tracking-widest font-black mr-1">LIVE AUDIO STREAM</span>
+          <div class="w-1 bg-neon-lime rounded-full eq-1"></div>
+          <div class="w-1 bg-neon-lime rounded-full eq-2"></div>
+          <div class="w-1 bg-neon-lime rounded-full eq-3"></div>
+          <div class="w-1 bg-neon-lime rounded-full eq-4"></div>
+        </div>
+
+        <div class="absolute bottom-6 left-6 right-6 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3 bg-obsidian-card/90 backdrop-blur-md px-5 py-2.5 rounded-full border border-border-raw group-hover:border-neon-lime transition-colors">
+            <span class="w-2.5 h-2.5 rounded-full bg-neon-lime animate-pulse"></span>
+            <span class="font-headline text-xs uppercase text-text-chalk font-bold">CURRENT BRIEF: BOEING 737 DUAL AVIONICS FAILURE</span>
+          </div>
+          <span class="font-mono text-xs text-neon-lime uppercase tracking-widest bg-obsidian-deep/90 px-4 py-2 rounded-full border border-neon-lime/30 font-bold group-hover:bg-neon-lime group-hover:text-obsidian-deep transition-all">
+            ADMISSIONS OPEN • CYCLE #04
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WAVY SVG TRANSITION -->
+  <div class="w-full -mb-1 fill-[#D9B8FF] leading-none pointer-events-none">
+    <svg class="w-full h-16 md:h-24" preserveaspectratio="none" viewBox="0 0 1440 120">
+      <path d="M0,32L60,48C120,64,240,96,360,96C480,96,600,64,720,53.3C840,43,960,53,1080,69.3C1200,85,1320,107,1380,117.3L1440,128L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"></path>
+    </svg>
+  </div>
+
+  <!-- =========================================================================
+       5. SECTION 2: RADICAL DOCTRINE & SPINNABLE BADGE (Agency Side + Agence Foudre)
+       ========================================================================= -->
+  <section id="doctrine-manifesto" class="w-full bg-electric-lilac text-obsidian-deep py-24 lg:py-36 px-6 lg:px-12 relative overflow-hidden">
+    
+    <!-- Spinnable Retro Badge on Side -->
+    <div class="hidden xl:block absolute right-12 top-20 z-20 cursor-pointer group spinnable-badge" title="Agency Side Spinnable Badge">
+      <svg class="w-44 h-44 drop-shadow-[6px_6px_0px_#000000]" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="90" fill="#FF2D78" stroke="#080412" stroke-width="4"/>
+        <path id="badge-text-path-2" d="M 100, 100 m -64, 0 a 64,64 0 1,1 128,0 a 64,64 0 1,1 -128,0" fill="none"/>
+        <text class="font-mono font-bold text-[13px] uppercase fill-text-chalk tracking-[0.22em]">
+          <textPath href="#badge-text-path-2">
+            ★ UNREHEARSED ★ ZERO SCRIPT ★ NO PPT ★
+          </textPath>
+        </text>
+        <circle cx="100" cy="100" r="28" fill="#080412"/>
+        <text x="100" y="106" font-family="Space Grotesk" font-weight="900" font-size="20" fill="#CEFF00" text-anchor="middle">★</text>
+      </svg>
+    </div>
+
+    <div class="max-w-6xl mx-auto flex flex-col items-center text-center">
+      <div class="inline-flex items-center gap-2 bg-obsidian-deep text-neon-lime px-5 py-2 rounded-full font-mono text-xs uppercase font-bold tracking-widest shadow-[4px_4px_0px_#000000] mb-8 hover:scale-105 transition-transform cursor-pointer">
+        <span class="material-symbols-outlined text-[18px] text-amber-flare">history_edu</span>
+        <span>THE RADICAL DOCTRINE // MANIFESTO</span>
+      </div>
+
+      <!-- Expressive Bold Statement with Inline Stickers -->
+      <div class="mask-line">
+        <p class="reveal-up font-headline text-3xl sm:text-5xl lg:text-[54px] lg:leading-[1.12] text-obsidian-deep font-black tracking-tight max-w-5xl">
+          We forge unshakeable communicators 
+          <span class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-obsidian-deep text-amber-flare align-middle shadow-[4px_4px_0px_#000000] mx-1 rotate-3 hover:rotate-12 hover:scale-110 transition-transform cursor-pointer">
+            <span class="material-symbols-outlined text-3xl md:text-4xl">inventory_2</span>
+          </span>
+          people trust and debaters 
+          <span class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-neon-lime text-obsidian-deep align-middle shadow-[4px_4px_0px_#000000] mx-1 -rotate-6 hover:rotate-0 hover:scale-110 transition-transform font-bold cursor-pointer">
+            <span class="material-symbols-outlined text-3xl md:text-4xl">favorite</span>
+          </span>
+          that dominate high-stakes war rooms. Clean in form. 
+          <span class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-hot-magenta text-text-chalk align-middle shadow-[4px_4px_0px_#000000] mx-1 rotate-6 hover:-rotate-6 hover:scale-110 transition-transform cursor-pointer">
+            <span class="material-symbols-outlined text-3xl md:text-4xl">electric_bolt</span>
+          </span>
+          Sharp in 
+          <span class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-electric-cobalt text-text-chalk align-middle shadow-[4px_4px_0px_#000000] mx-1 -rotate-3 hover:rotate-6 hover:scale-110 transition-transform cursor-pointer">
+            <span class="material-symbols-outlined text-3xl md:text-4xl">insights</span>
+          </span>
+          spontaneous function.
+        </p>
+      </div>
+
+      <!-- Cascading Metric Counters (Creative Club & Agency Side stats) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full mt-20 max-w-4xl" id="stats-counter-wrapper">
+        <div class="stat-box bg-obsidian-deep text-text-chalk p-6 rounded-2xl shadow-[6px_6px_0px_#000000] border-2 border-obsidian-deep flex flex-col items-center text-center group hover:-translate-y-2 hover:border-neon-lime transition-all cursor-pointer">
+          <span class="font-display text-5xl text-neon-lime font-black counter-num" data-target="42" data-suffix="%">0%</span>
+          <span class="font-mono text-xs text-text-muted uppercase tracking-wider mt-2 font-bold">Retention Spike</span>
+        </div>
+        <div class="stat-box bg-obsidian-deep text-text-chalk p-6 rounded-2xl shadow-[6px_6px_0px_#000000] border-2 border-obsidian-deep flex flex-col items-center text-center group hover:-translate-y-2 hover:border-hot-magenta transition-all cursor-pointer">
+          <span class="font-display text-5xl text-hot-magenta font-black counter-num" data-target="67" data-suffix="%">0%</span>
+          <span class="font-mono text-xs text-text-muted uppercase tracking-wider mt-2 font-bold">Panic Floor Drop</span>
+        </div>
+        <div class="stat-box bg-obsidian-deep text-text-chalk p-6 rounded-2xl shadow-[6px_6px_0px_#000000] border-2 border-obsidian-deep flex flex-col items-center text-center group hover:-translate-y-2 hover:border-amber-flare transition-all cursor-pointer">
+          <span class="font-display text-5xl text-amber-flare font-black counter-num" data-target="500" data-suffix="+">0+</span>
+          <span class="font-mono text-xs text-text-muted uppercase tracking-wider mt-2 font-bold">Simulated Queries</span>
+        </div>
+        <div class="stat-box bg-obsidian-deep text-text-chalk p-6 rounded-2xl shadow-[6px_6px_0px_#000000] border-2 border-obsidian-deep flex flex-col items-center text-center group hover:-translate-y-2 hover:border-electric-lilac transition-all cursor-pointer">
+          <span class="font-display text-5xl text-electric-lilac font-black counter-num" data-target="100" data-suffix="%">0%</span>
+          <span class="font-mono text-xs text-text-muted uppercase tracking-wider mt-2 font-bold">Zero Scripted Lies</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAVY TRANSITION BACK TO OBSIDIAN -->
+  <div class="w-full -mt-1 fill-[#D9B8FF] rotate-180 leading-none pointer-events-none">
+    <svg class="w-full h-16 md:h-24" preserveaspectratio="none" viewBox="0 0 1440 120">
+      <path d="M0,32L60,48C120,64,240,96,360,96C480,96,600,64,720,53.3C840,43,960,53,1080,69.3C1200,85,1320,107,1380,117.3L1440,128L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"></path>
+    </svg>
+  </div>
+
+  <!-- =========================================================================
+       6. SECTION 3: LIVING MASCOT & CURSOR TRACKING PUPILS (Agence Foudre)
+       ========================================================================= -->
+  <section class="w-full py-28 px-6 lg:px-12 relative flex flex-col items-center justify-center bg-obsidian-deep select-none">
+    <div class="max-w-5xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+      
+      <!-- Interactive Mascot -->
+      <div class="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center cursor-pointer group mascot-squash" id="mascot-stage" title="Click me to toggle shades and props!">
+        <!-- Outer Starburst vector -->
+        <svg class="w-full h-full drop-shadow-[8px_8px_0px_#000000] group-hover:rotate-6 transition-all duration-300 relative z-10" viewBox="0 0 200 200">
+          <polygon fill="#CEFF00" points="100,5 122,50 172,30 152,78 195,100 152,122 172,170 122,150 100,195 78,150 28,170 48,122 5,100 48,78 28,30 78,50" stroke="#080412" stroke-linejoin="round" stroke-width="5"/>
+        </svg>
+
+        <!-- Cartoon Eyes with Mouse-Tracking Pupils -->
+        <div class="absolute inset-0 flex items-center justify-center gap-4 pointer-events-none -mt-4 eye-blink-anim z-20">
+          <div class="w-12 h-16 bg-white rounded-full border-4 border-obsidian-deep relative overflow-hidden flex items-center justify-center shadow-inner">
+            <div class="w-6 h-7 bg-obsidian-deep rounded-full transition-transform duration-75 flex items-center justify-center" id="mascot-pupil-left">
+              <span class="w-2 h-2 bg-white rounded-full self-start mt-1 mr-1"></span>
+            </div>
+          </div>
+          <div class="w-12 h-16 bg-white rounded-full border-4 border-obsidian-deep relative overflow-hidden flex items-center justify-center shadow-inner">
+            <div class="w-6 h-7 bg-obsidian-deep rounded-full transition-transform duration-75 flex items-center justify-center" id="mascot-pupil-right">
+              <span class="w-2 h-2 bg-white rounded-full self-start mt-1 mr-1"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sunglasses Prop (Click to Toggle) -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none -mt-4 z-30 transition-all duration-300 scale-0 opacity-0" id="mascot-shades">
+          <div class="flex items-center">
+            <div class="w-14 h-9 bg-obsidian-deep rounded-lg border-2 border-neon-lime flex items-center justify-center shadow-[4px_4px_0px_#000000]">
+              <div class="w-8 h-1 bg-neon-lime/80 -rotate-45"></div>
+            </div>
+            <div class="w-4 h-2 bg-obsidian-deep border-t-2 border-b-2 border-neon-lime"></div>
+            <div class="w-14 h-9 bg-obsidian-deep rounded-lg border-2 border-neon-lime flex items-center justify-center shadow-[4px_4px_0px_#000000]">
+              <div class="w-8 h-1 bg-neon-lime/80 -rotate-45"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute -bottom-4 bg-obsidian-card text-neon-lime border border-neon-lime/60 px-4 py-1 rounded-full font-mono text-[11px] tracking-wider uppercase shadow-[3px_3px_0px_#000000] z-20 font-bold">
+          CLICK TO SHADE 🕶️
+        </div>
+      </div>
+
+      <!-- Mascot Editorial Copy -->
+      <div class="flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+        <div class="font-mono text-xs tracking-widest text-electric-lilac uppercase bg-obsidian-card px-4 py-1.5 rounded-full border border-border-raw font-bold">
+          ⚡ 100% DISCIPLINE // HOSTILE PROTOCOL
+        </div>
+        <div class="mask-line">
+          <h2 class="reveal-up font-display text-5xl md:text-6xl text-text-chalk uppercase tracking-wide leading-none">
+            CONFIDENCE <br/><span class="text-neon-lime">UNDER FIRE</span>
+          </h2>
+        </div>
+        <p class="text-text-muted max-w-md font-body text-base">
+          Step into our live simulated hostile briefings. Test your instincts against unrelenting inquisitors and unpredictable stakeholders with zero rehearsal.
+        </p>
+        <button id="mascot-cta-btn" class="group relative inline-flex items-center justify-between gap-6 pl-8 pr-3 py-3 rounded-full bg-neon-lime text-obsidian-deep font-headline text-base tracking-wider uppercase font-black shadow-[6px_6px_0px_#000000] hover:scale-105 active:scale-95 transition-all cursor-pointer">
+          <span>ENTER THE PODIUM</span>
+          <div class="w-12 h-12 rounded-full bg-obsidian-deep text-neon-lime flex items-center justify-center group-hover:rotate-45 group-hover:bg-hot-magenta group-hover:text-white transition-all duration-300">
+            <span class="material-symbols-outlined text-[26px]">north_east</span>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       7. SECTION 4: 3 ARENAS / TRACKS WITH 3D FLIP TILT CARDS
+       ========================================================================= -->
+  <section id="arena-tracks" class="w-full py-28 px-6 lg:px-12 bg-obsidian-card relative">
+    <div class="max-w-7xl mx-auto space-y-12">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-border-raw">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-hot-magenta font-black">ACTIVE SIMULATION TRACKS</span>
+          <div class="mask-line block mt-2">
+            <h2 class="reveal-up font-display text-4xl sm:text-6xl uppercase text-text-chalk leading-none font-black">
+              THREE ARENAS. <span class="text-neon-lime">ZERO SCRIPT.</span>
+            </h2>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <p class="text-sm text-text-muted max-w-sm font-body">
+            Select your pressure vector. Each format delivers unbuffered executive exposure and instant quantitative feedback.
+          </p>
+          <!-- Controls -->
+          <div class="flex items-center gap-2">
+            <button id="slider-prev-btn" class="w-11 h-11 rounded-full bg-obsidian-elevated border border-border-raw text-text-chalk flex items-center justify-center hover:border-neon-lime hover:text-neon-lime transition-all active:scale-95 cursor-pointer">
+              <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+            </button>
+            <button id="slider-next-btn" class="w-11 h-11 rounded-full bg-obsidian-elevated border border-border-raw text-text-chalk flex items-center justify-center hover:border-neon-lime hover:text-neon-lime transition-all active:scale-95 cursor-pointer">
+              <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D Flip Card Container -->
+      <div id="tracks-slider" class="flex gap-8 overflow-x-auto pb-8 snap-x snap-mandatory flip-perspective-zone">
+        
+        <!-- TRACK 01: NEON LIME -->
+        <div class="arena-tilt-card init-flipped shrink-0 w-full sm:w-[380px] lg:w-[calc(33.333%-1.35rem)] rounded-2xl bg-neon-lime text-obsidian-deep p-8 md:p-10 flex flex-col justify-between min-h-[480px] shadow-[8px_8px_0px_#000000] border-3 border-obsidian-deep relative group cursor-pointer snap-start" data-card-id="0">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs uppercase font-black tracking-widest px-3 py-1 bg-obsidian-deep text-neon-lime rounded-full">TRACK 01 // PRESS</span>
+              <div class="w-12 h-12 text-obsidian-deep group-hover:rotate-45 transition-transform duration-500">
+                <svg class="w-full h-full fill-current" viewBox="0 0 100 100">
+                  <path d="M50 0 C55 25 75 25 100 50 C75 55 75 75 50 100 C45 75 25 75 0 50 C25 45 25 25 50 0 Z"/>
+                  <circle cx="50" cy="50" fill="#CEFF00" r="14"/>
+                  <circle cx="50" cy="50" fill="#080412" r="6"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="font-display text-4xl uppercase font-black leading-none mt-6 tracking-tight">
+              CHOOSING MY WORST COMPANY
+            </h3>
+            <p class="text-sm text-obsidian-deep/90 mt-4 leading-relaxed font-body font-medium">
+              Step to the podium as the embattled CEO of a compromised corporate giant. Weather 48 hostile journalist queries, leaks, and televised stakeholder panic.
+            </p>
+          </div>
+          <div class="pt-8 space-y-6">
+            <div class="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-wider">
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 45 MIN FLIGHT</span>
+              <span>•</span>
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">groups</span> 48 PRESS SLOTS</span>
+            </div>
+            <button class="w-full py-4 px-6 rounded-full bg-obsidian-deep text-neon-lime font-headline text-xs uppercase tracking-wider font-black shadow-[4px_4px_0px_#321D66] hover:bg-obsidian-card hover:scale-102 transition-all flex items-center justify-between cursor-pointer">
+              <span>DEPLOY TO PODIUM</span>
+              <span class="material-symbols-outlined text-[18px]">bolt</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TRACK 02: HOT MAGENTA -->
+        <div class="arena-tilt-card init-flipped shrink-0 w-full sm:w-[380px] lg:w-[calc(33.333%-1.35rem)] rounded-2xl bg-hot-magenta text-text-chalk p-8 md:p-10 flex flex-col justify-between min-h-[480px] shadow-[8px_8px_0px_#000000] border-3 border-obsidian-deep relative group cursor-pointer snap-start" data-card-id="1">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs uppercase font-black tracking-widest px-3 py-1 bg-obsidian-deep text-hot-magenta rounded-full">TRACK 02 // BOARD</span>
+              <div class="w-12 h-12 text-text-chalk group-hover:rotate-45 transition-transform duration-500">
+                <svg class="w-full h-full fill-current" viewBox="0 0 100 100">
+                  <path d="M50 0 C55 25 75 25 100 50 C75 55 75 75 50 100 C45 75 25 75 0 50 C25 45 25 25 50 0 Z"/>
+                  <circle cx="50" cy="50" fill="#FF2D78" r="14"/>
+                  <circle cx="50" cy="50" fill="#F7F5FF" r="6"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="font-display text-4xl uppercase font-black leading-none mt-6 tracking-tight">
+              THE CEO CHALLENGE
+            </h3>
+            <p class="text-sm text-text-chalk/90 mt-4 leading-relaxed font-body font-medium">
+              48-hour case sprint culminating in direct boardroom cross-examination. Defend high-risk capital allocation, radical restructuring, and AI pivot strategies.
+            </p>
+          </div>
+          <div class="pt-8 space-y-6">
+            <div class="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-wider text-text-chalk/80">
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> 48-HR SPRINT</span>
+              <span>•</span>
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">account_balance</span> 3 JURORS</span>
+            </div>
+            <button class="w-full py-4 px-6 rounded-full bg-obsidian-deep text-hot-magenta font-headline text-xs uppercase tracking-wider font-black shadow-[4px_4px_0px_#321D66] hover:bg-obsidian-card hover:scale-102 transition-all flex items-center justify-between cursor-pointer">
+              <span>FACE THE BOARD</span>
+              <span class="material-symbols-outlined text-[18px]">trending_up</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TRACK 03: ELECTRIC COBALT -->
+        <div class="arena-tilt-card init-flipped shrink-0 w-full sm:w-[380px] lg:w-[calc(33.333%-1.35rem)] rounded-2xl bg-electric-cobalt text-text-chalk p-8 md:p-10 flex flex-col justify-between min-h-[480px] shadow-[8px_8px_0px_#000000] border-3 border-obsidian-deep relative group cursor-pointer snap-start" data-card-id="2">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs uppercase font-black tracking-widest px-3 py-1 bg-obsidian-deep text-electric-lilac rounded-full">TRACK 03 // COMBAT</span>
+              <div class="w-12 h-12 text-text-chalk group-hover:rotate-45 transition-transform duration-500">
+                <svg class="w-full h-full fill-current" viewBox="0 0 100 100">
+                  <path d="M50 0 C55 25 75 25 100 50 C75 55 75 75 50 100 C45 75 25 75 0 50 C25 45 25 25 50 0 Z"/>
+                  <circle cx="50" cy="50" fill="#2563EB" r="14"/>
+                  <circle cx="50" cy="50" fill="#CEFF00" r="6"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="font-display text-4xl uppercase font-black leading-none mt-6 tracking-tight">
+              VERBAL NEXUS ARENA
+            </h3>
+            <p class="text-sm text-text-chalk/90 mt-4 leading-relaxed font-body font-medium">
+              Spontaneous 1-on-1 debate circuit. Random corporate ethics cards, high-velocity counterarguments, and ruthless crowd telemetry scoring in 60s rounds.
+            </p>
+          </div>
+          <div class="pt-8 space-y-6">
+            <div class="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-wider text-text-chalk/80">
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">speed</span> 60s REBUTTAL</span>
+              <span>•</span>
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">bar_chart</span> LIVE SCORING</span>
+            </div>
+            <button class="w-full py-4 px-6 rounded-full bg-obsidian-deep text-electric-lilac font-headline text-xs uppercase tracking-wider font-black shadow-[4px_4px_0px_#321D66] hover:bg-obsidian-card hover:scale-102 transition-all flex items-center justify-between cursor-pointer">
+              <span>ENTER COMBAT RING</span>
+              <span class="material-symbols-outlined text-[18px]">forum</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Carousel Progress Bar -->
+      <div class="flex items-center justify-center gap-2 pt-2">
+        <span class="slider-dot w-8 h-2 rounded-full bg-neon-lime transition-all cursor-pointer" data-idx="0"></span>
+        <span class="slider-dot w-2 h-2 rounded-full bg-border-raw transition-all cursor-pointer" data-idx="1"></span>
+        <span class="slider-dot w-2 h-2 rounded-full bg-border-raw transition-all cursor-pointer" data-idx="2"></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       8. SECTION 5: RETRO TV CRT DEBRIEFS & CASE DOSSIERS (Agency Side Style)
+       ========================================================================= -->
+  <section id="retro-debriefs" class="w-full py-28 px-6 lg:px-12 bg-obsidian-deep relative overflow-hidden flex flex-col items-center">
+    
+    <!-- Header -->
+    <div class="relative z-10 text-center space-y-3 max-w-2xl mb-16">
+      <span class="px-5 py-2 rounded-full bg-obsidian-card text-amber-flare font-mono text-xs uppercase font-bold border border-border-raw shadow-[4px_4px_0px_#000000] inline-block">
+        ARCHIVED DEBRIEFS // RETRO MONITOR
+      </span>
+      <div class="mask-line block">
+        <h2 class="reveal-up font-display text-4xl sm:text-6xl uppercase text-text-chalk font-black tracking-tight">
+          PROVEN UNDER FIRE
+        </h2>
+      </div>
+      <p class="text-sm text-text-muted font-body">
+        Select a channel below to inspect live unedited recordings, case dossier slides, and crisis telemetry scores.
+      </p>
+
+      <!-- TV Channel Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+        <button class="tv-channel-btn active px-4 py-2 rounded-full bg-neon-lime text-obsidian-deep font-mono text-xs uppercase font-black shadow-[3px_3px_0px_#000000] cursor-pointer" data-channel="0">
+          CH 01 // BOEING 737
+        </button>
+        <button class="tv-channel-btn px-4 py-2 rounded-full bg-obsidian-card text-text-chalk border border-border-raw font-mono text-xs uppercase font-bold hover:border-hot-magenta transition-all cursor-pointer" data-channel="1">
+          CH 02 // WEWORK MELT
+        </button>
+        <button class="tv-channel-btn px-4 py-2 rounded-full bg-obsidian-card text-text-chalk border border-border-raw font-mono text-xs uppercase font-bold hover:border-electric-lilac transition-all cursor-pointer" data-channel="2">
+          CH 03 // AUTONOMOUS FLEET
+        </button>
+      </div>
+    </div>
+
+    <!-- RETRO TV CASING & CRT SCREEN CONTAINER -->
+    <div class="relative z-10 w-full max-w-4xl retro-tv-casing p-6 sm:p-10">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- The CRT Display -->
+        <div class="lg:col-span-8 retro-tv-screen h-72 sm:h-96 bg-black relative">
+          <!-- Video / Dossier Canvas Frame -->
+          <img id="tv-screen-img" alt="Case Dossier" class="w-full h-full object-cover transition-all duration-500" 
+               src="https://lh3.googleusercontent.com/aida/AEtjO1WmYQZj4gJ8-yefjvs2P0p-6rPkHFPKu3JNHTid0uvpazXrCEkA6eVlQ6Py6uqhAHwbMErQpLGLepoekDVvTnV9sH5k-MvhvPSCs3WU3PrJEcAKFI5BBBmCBRXNGTwkJlgWu0PCCd9SIWQ3NCpb1qoDsXJbAH2oY_qHR8xB45hndM72KXklzxCPn1fA6lC4HcRJD1f4q7u3ZKsSYrdcPxJMFz-oKKWjtaZmtow5PWyjQeHLiMGG8cx_PNw"/>
+          
+          <!-- Retro TV Corner Metadata -->
+          <div class="absolute top-4 left-4 z-30 font-mono text-[11px] text-neon-lime bg-black/80 px-2.5 py-1 rounded border border-neon-lime/40">
+            <span id="tv-channel-tag">REC // CH 01 [CASE #104]</span>
+          </div>
+          
+          <div class="absolute bottom-4 left-4 right-4 z-30 flex items-center justify-between text-xs font-mono text-white bg-black/75 backdrop-blur-sm p-3 rounded-lg border border-white/20">
+            <span id="tv-status-tag" class="text-neon-lime font-bold">SCORE: 94.2% [BOARD APPROVED]</span>
+            <span class="flex items-center gap-1 text-hot-magenta font-bold"><span class="w-2 h-2 rounded-full bg-hot-magenta animate-ping"></span> ARCHIVED</span>
+          </div>
+        </div>
+
+        <!-- TV Controls Panel (Dials, Knobs, Speaker Grille) -->
+        <div class="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs uppercase text-text-muted">CRT MONITOR</span>
+              <span class="w-3 h-3 rounded-full bg-neon-lime animate-pulse"></span>
+            </div>
+            <h4 id="tv-case-title" class="font-headline text-2xl uppercase text-text-chalk font-black">
+              BOEING 737 SIMULATION
+            </h4>
+            <p id="tv-case-desc" class="font-body text-xs text-text-muted leading-relaxed">
+              Managing dual avionics failure leaks, global FAA grounding, and hostile broadcast hearings in an unrelenting 3-hour pressure sprint.
+            </p>
+          </div>
+
+          <!-- Tactile Rotary Knobs & Speaker Lines -->
+          <div class="space-y-4 pt-4 border-t border-border-raw">
+            <div class="flex items-center gap-4">
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-12 h-12 rounded-full bg-obsidian-deep border-2 border-border-bright flex items-center justify-center cursor-pointer hover:rotate-45 transition-transform shadow-[2px_2px_0px_#000000]">
+                  <div class="w-1.5 h-4 bg-neon-lime rounded-full -mt-2"></div>
+                </div>
+                <span class="font-mono text-[9px] text-text-muted">TUNER</span>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-12 h-12 rounded-full bg-obsidian-deep border-2 border-border-bright flex items-center justify-center cursor-pointer hover:rotate-90 transition-transform shadow-[2px_2px_0px_#000000]">
+                  <div class="w-1.5 h-4 bg-hot-magenta rounded-full -mt-2"></div>
+                </div>
+                <span class="font-mono text-[9px] text-text-muted">V-HOLD</span>
+              </div>
+              <!-- Mini Speaker Grille -->
+              <div class="flex-1 flex flex-col gap-1 pl-2">
+                <div class="h-1 bg-border-raw rounded"></div>
+                <div class="h-1 bg-border-raw rounded"></div>
+                <div class="h-1 bg-border-raw rounded"></div>
+                <div class="h-1 bg-border-raw rounded"></div>
+              </div>
+            </div>
+
+            <button id="tv-action-btn" class="w-full py-3.5 px-5 rounded-full bg-neon-lime text-obsidian-deep font-headline text-xs uppercase tracking-wider font-black shadow-[4px_4px_0px_#000000] hover:scale-105 transition-all flex items-center justify-between cursor-pointer">
+              <span>WATCH CASE STUDY</span>
+              <span class="material-symbols-outlined text-[18px]">play_circle</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       9. SECTION 6: PSYCHOMETRIC "CHOOSE YOUR VIBE" CALIBRATION
+       ========================================================================= -->
+  <section id="psychometric-section" class="w-full py-28 px-6 lg:px-12 bg-electric-lilac text-obsidian-deep flex flex-col items-center justify-center relative">
+    <div class="max-w-4xl mx-auto flex flex-col items-center text-center space-y-10">
+      
+      <div class="space-y-3">
+        <span class="font-mono text-xs uppercase font-black tracking-widest bg-obsidian-deep text-neon-lime px-4 py-1.5 rounded-full shadow-[3px_3px_0px_#000000] inline-block">
+          PSYCHOMETRIC CALIBRATION
+        </span>
+        <div class="mask-line block">
+          <h2 class="reveal-up font-display text-4xl sm:text-6xl uppercase font-black text-obsidian-deep leading-none">
+            CHOOSE YOUR VIBE. WE'RE LISTENING.
+          </h2>
+        </div>
+        <p class="text-sm text-obsidian-deep/80 max-w-md mx-auto font-body font-medium">
+          How do you naturally handle high-stakes pressure? Select your combat style below.
+        </p>
+      </div>
+
+      <!-- 3 Character Expression Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-8 md:gap-14 pt-4">
+        
+        <!-- Vibe 1: Aggressor -->
+        <button class="vibe-card flex flex-col items-center gap-3 group cursor-pointer" data-vibe="aggressor" type="button">
+          <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-[#FF3B30] border-4 border-obsidian-deep flex items-center justify-center shadow-[6px_6px_0px_#000000] relative overflow-hidden group-hover:scale-110 transition-transform">
+            <svg class="w-20 h-20 fill-current text-white" viewBox="0 0 100 100">
+              <circle cx="35" cy="40" fill="#080412" r="8"/>
+              <circle cx="65" cy="40" fill="#080412" r="8"/>
+              <polygon fill="#080412" points="25,28 45,35 25,32"/>
+              <polygon fill="#080412" points="75,28 55,35 75,32"/>
+              <path d="M 30 70 Q 50 50 70 70" fill="none" stroke="#080412" stroke-linecap="round" stroke-width="6"/>
+            </svg>
+          </div>
+          <span class="font-headline text-xs uppercase font-bold text-obsidian-deep">WAR ROOM AGGRESSOR</span>
+        </button>
+
+        <!-- Vibe 2: Calm Architect (Default Selected) -->
+        <button class="vibe-card active flex flex-col items-center gap-3 group cursor-pointer" data-vibe="architect" type="button">
+          <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-neon-lime border-4 border-obsidian-deep flex items-center justify-center shadow-[6px_6px_0px_#000000] scale-110 -rotate-3 relative overflow-hidden group-hover:scale-115 transition-transform">
+            <svg class="w-20 h-20 fill-current text-obsidian-deep" viewBox="0 0 100 100">
+              <ellipse cx="35" cy="42" fill="#080412" rx="7" ry="10"/>
+              <ellipse cx="65" cy="42" fill="#080412" rx="7" ry="10"/>
+              <circle cx="37" cy="38" fill="#CEFF00" r="2.5"/>
+              <circle cx="67" cy="38" fill="#CEFF00" r="2.5"/>
+              <path d="M 32 66 Q 50 82 68 66" fill="none" stroke="#080412" stroke-linecap="round" stroke-width="5"/>
+            </svg>
+          </div>
+          <span class="font-headline text-xs uppercase font-black text-obsidian-deep underline">CALM ARCHITECT</span>
+        </button>
+
+        <!-- Vibe 3: Verbal Lightning -->
+        <button class="vibe-card flex flex-col items-center gap-3 group cursor-pointer" data-vibe="lightning" type="button">
+          <div class="w-28 h-28 md:w-32 md:h-32 rounded-full bg-amber-flare border-4 border-obsidian-deep flex items-center justify-center shadow-[6px_6px_0px_#000000] relative overflow-hidden group-hover:scale-110 transition-transform">
+            <svg class="w-20 h-20 fill-current text-obsidian-deep" viewBox="0 0 100 100">
+              <polygon fill="#080412" points="35,28 39,38 49,38 41,45 44,55 35,49 26,55 29,45 21,38 31,38"/>
+              <polygon fill="#080412" points="65,28 69,38 79,38 71,45 74,55 65,49 56,55 59,45 51,38 61,38"/>
+              <ellipse cx="50" cy="72" fill="#080412" rx="14" ry="8"/>
+            </svg>
+          </div>
+          <span class="font-headline text-xs uppercase font-bold text-obsidian-deep">VERBAL LIGHTNING</span>
+        </button>
+
+      </div>
+
+      <!-- Live Dynamic Quote Response Box -->
+      <div id="vibe-quote-box" class="bg-obsidian-deep text-neon-lime px-8 py-5 rounded-2xl border-2 border-obsidian-deep text-sm font-body font-medium max-w-xl shadow-[5px_5px_0px_#321D66] min-h-[5rem] flex items-center justify-center text-center">
+        "You are the calm crisis architect. High emotional control, logical reframing, and calculated boardroom defense."
+      </div>
+
+      <button id="vibe-submit-btn" class="px-8 py-4 rounded-full bg-obsidian-deep text-electric-lilac hover:text-neon-lime border-2 border-obsidian-deep font-headline text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_#000000] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
+        <span>SUBMIT CADENCE PREFERENCE</span>
+        <span class="material-symbols-outlined text-[18px]">verified</span>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       10. BOTTOM TICKER MARQUEE
+       ========================================================================= -->
+  <div class="w-full bg-neon-lime py-4 overflow-hidden border-y-3 border-obsidian-deep select-none">
+    <div class="marquee-infinite whitespace-nowrap flex items-center gap-14 font-display text-2xl uppercase text-obsidian-deep font-black tracking-widest">
+      <span>IMPULSE ARENA ✹ NO PPT</span>
+      <span>WAR ROOM VERIFIED ✹ 4.9/5 RATING</span>
+      <span>RADICAL DISRUPTION ✹ ZERO SCRIPTS</span>
+      <span>BOEING // WEWORK // AUTONOMOUS CASES</span>
+      <span>IMPULSE ARENA ✹ NO PPT</span>
+      <span>WAR ROOM VERIFIED ✹ 4.9/5 RATING</span>
+      <span>RADICAL DISRUPTION ✹ ZERO SCRIPTS</span>
+      <span>BOEING // WEWORK // AUTONOMOUS CASES</span>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       11. PERSISTENT FOOTER
+       ========================================================================= -->
+  <footer class="w-full bg-obsidian-card relative overflow-hidden border-t border-border-raw">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="font-display text-3xl uppercase text-text-chalk">IMPULSE PROTOCOL</span>
+          <span class="px-3 py-0.5 rounded-full bg-hot-magenta text-text-chalk font-mono text-[10px] uppercase font-bold">REACTIVE // 2026</span>
+        </div>
+        <p class="text-xs text-text-muted max-w-sm font-body">
+          Student innovation foundry and tactical crisis simulation arena. High-velocity problem solving for the culture-forward digital vanguard.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4">
+        <a class="px-6 py-3 rounded-full bg-obsidian-elevated text-electric-lilac hover:text-white font-mono text-xs uppercase tracking-wider transition-all border border-border-raw hover:scale-105" href="mailto:ops@impulse.agency">
+          ops@impulse.agency
+        </a>
+        <div class="flex items-center gap-2">
+          <div class="w-10 h-10 rounded-full bg-obsidian-elevated hover:bg-hot-magenta text-text-chalk flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-border-raw">
+            <span class="material-symbols-outlined text-[18px]">hub</span>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-obsidian-elevated hover:bg-electric-cobalt text-text-chalk flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-border-raw">
+            <span class="material-symbols-outlined text-[18px]">forum</span>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-obsidian-elevated hover:bg-neon-lime hover:text-obsidian-deep text-text-chalk flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-border-raw">
+            <span class="material-symbols-outlined text-[18px]">public</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 pb-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-text-muted uppercase">
+      <p>© 2026 IMPULSE ARENA ALLIANCE. ALL RIGHTS RESERVED.</p>
+      <div class="flex items-center gap-6">
+        <a class="hover:text-neon-lime transition-colors" href="#">Code of Conduct</a>
+        <a class="hover:text-neon-lime transition-colors" href="#">Simulation Guidelines</a>
+        <a class="hover:text-neon-lime transition-colors" href="#">Security Zero</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       12. AUDITION APPLICATION MODAL (Terminal Brutalist)
+       ========================================================================= -->
+  <div id="audition-modal" class="fixed inset-0 z-[70] bg-obsidian-deep/90 backdrop-blur-xl hidden items-center justify-center p-6">
+    <div class="bg-obsidian-card w-full max-w-lg rounded-2xl border-2 border-neon-lime p-8 shadow-[12px_12px_0px_#000000] relative">
+      <div class="flex items-center justify-between border-b border-border-raw pb-4 mb-6">
+        <div class="flex items-center gap-2 font-mono text-xs text-neon-lime uppercase font-bold">
+          <span class="w-2.5 h-2.5 rounded-full bg-neon-lime animate-pulse"></span>
+          <span>DISPATCH ENROLLMENT TERMINAL</span>
+        </div>
+        <button id="close-audition-btn" class="w-8 h-8 rounded-full bg-obsidian-deep text-text-muted hover:text-white flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <form id="audition-form" class="space-y-5 font-mono text-xs">
+        <div>
+          <label class="block text-text-muted uppercase mb-1.5">// EXECUTIVE CALLSIGN / NAME</label>
+          <input type="text" required placeholder="[E.G. ALEX_VANCE]" class="w-full bg-obsidian-deep border-2 border-border-raw rounded-lg px-4 py-3 text-text-chalk focus:border-neon-lime focus:outline-none"/>
+        </div>
+        <div>
+          <label class="block text-text-muted uppercase mb-1.5">// ENCRYPTED TRANSMISSION EMAIL</label>
+          <input type="email" required placeholder="[NAME@INSTITUTION.EDU]" class="w-full bg-obsidian-deep border-2 border-border-raw rounded-lg px-4 py-3 text-text-chalk focus:border-neon-lime focus:outline-none"/>
+        </div>
+        <div>
+          <label class="block text-text-muted uppercase mb-1.5">// PREFERRED COMBAT SECTOR</label>
+          <select class="w-full bg-obsidian-deep border-2 border-border-raw rounded-lg px-4 py-3 text-text-chalk focus:border-neon-lime focus:outline-none">
+            <option value="press">TRACK 01: HOSTILE PRESS CONFERENCE</option>
+            <option value="board">TRACK 02: BOARDROOM MUTINY DEFENSE</option>
+            <option value="nexus">TRACK 03: VERBAL NEXUS COMBAT RING</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-4 bg-neon-lime text-obsidian-deep font-headline font-black text-sm uppercase tracking-wider rounded-xl shadow-[4px_4px_0px_#000000] hover:scale-102 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 mt-4">
+          <span>TRANSMIT APPLICATION</span>
+          <span class="material-symbols-outlined text-[18px]">send</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       13. SCRIPT SUITE: PRELOADER, THREE.JS 3D PHYSICS, AUDIO SYNTH, MOTION
+       ========================================================================= -->
+  <script>
+    // --- 1. WEB AUDIO API SYNTHESIZER (Creative Club & Agence Foudre click audio) ---
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function playTone(freq, duration = 0.08, type = "sine") {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // AudioContext blocked or unavailable
+      }
+    }
+
+    const soundToggleBtn = document.getElementById('sound-toggle-btn');
+    const soundLabel = document.getElementById('sound-label');
+    const soundIcon = document.getElementById('sound-icon');
+    if (soundToggleBtn) {
+      soundToggleBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+          soundLabel.textContent = "FX ON";
+          soundIcon.textContent = "volume_up";
+          soundToggleBtn.classList.add('text-neon-lime');
+          soundToggleBtn.classList.remove('text-text-muted');
+          playTone(520, 0.1, "triangle");
+        } else {
+          soundLabel.textContent = "MUTED";
+          soundIcon.textContent = "volume_off";
+          soundToggleBtn.classList.remove('text-neon-lime');
+          soundToggleBtn.classList.add('text-text-muted');
+        }
+      });
+    }
+
+    // Attach click sound triggers across interactive buttons
+    document.querySelectorAll('button, a, .kinetic-letter, .vibe-card').forEach(el => {
+      el.addEventListener('click', () => playTone(660, 0.06, "sine"));
+      el.addEventListener('mouseenter', () => playTone(380, 0.03, "triangle"));
+    });
+
+    // --- 2. AGENCE FOUDRE PRELOADER COUNTDOWN & PROGRESS ---
+    const preloader = document.getElementById('site-preloader');
+    const preloaderBar = document.getElementById('preloader-bar');
+    const preloaderPercent = document.getElementById('preloader-percent');
+    let loadProgress = 0;
+
+    const loadInterval = setInterval(() => {
+      loadProgress += Math.floor(Math.random() * 14) + 6;
+      if (loadProgress >= 100) {
+        loadProgress = 100;
+        clearInterval(loadInterval);
+        preloaderBar.style.width = '100%';
+        preloaderPercent.textContent = '100%';
+        setTimeout(() => {
+          preloader.classList.add('loaded');
+          playTone(880, 0.15, "triangle");
+        }, 300);
+      } else {
+        preloaderBar.style.width = loadProgress + '%';
+        preloaderPercent.textContent = loadProgress + '%';
+      }
+    }, 45);
+
+    // --- 3. LIVE UTC WAR ROOM CLOCK ---
+    const clockEl = document.getElementById('live-utc-clock');
+    function updateClock() {
+      if (!clockEl) return;
+      const now = new Date();
+      clockEl.textContent = now.toTimeString().split(' ')[0];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- 4. CREATIVE CLUB THREE.JS PHYSICS & INTERACTIVE 3D TOKENS ---
+    const canvasContainer = document.getElementById('fidget-canvas-container');
+    if (canvasContainer && typeof THREE !== 'undefined') {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 24;
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      canvasContainer.appendChild(renderer.domElement);
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      scene.add(ambientLight);
+      const dirLight = new THREE.DirectionalLight(0xCEFF00, 1.4);
+      dirLight.position.set(10, 15, 10);
+      scene.add(dirLight);
+
+      // Create floating tactical 3D tokens
+      const geometries = [
+        new THREE.DodecahedronGeometry(1.6, 0),
+        new THREE.IcosahedronGeometry(1.4, 0),
+        new THREE.TorusGeometry(1.2, 0.45, 12, 24),
+        new THREE.OctahedronGeometry(1.5, 0),
+        new THREE.BoxGeometry(2, 2, 2)
+      ];
+
+      const materials = [
+        new THREE.MeshStandardMaterial({ color: 0xCEFF00, roughness: 0.2, metalness: 0.8, wireframe: false }),
+        new THREE.MeshStandardMaterial({ color: 0xFF2D78, roughness: 0.3, metalness: 0.7, wireframe: false }),
+        new THREE.MeshStandardMaterial({ color: 0x2563EB, roughness: 0.2, metalness: 0.9, wireframe: true }),
+        new THREE.MeshStandardMaterial({ color: 0xD9B8FF, roughness: 0.4, metalness: 0.5, wireframe: false }),
+        new THREE.MeshStandardMaterial({ color: 0xFFD026, roughness: 0.3, metalness: 0.6, wireframe: true })
+      ];
+
+      const tokens = [];
+      const tokenCount = 7;
+
+      for (let i = 0; i < tokenCount; i++) {
+        const geom = geometries[i % geometries.length];
+        const mat = materials[i % materials.length];
+        const mesh = new THREE.Mesh(geom, mat);
+
+        mesh.position.set(
+          (Math.random() - 0.5) * 28,
+          (Math.random() - 0.5) * 16,
+          (Math.random() - 0.5) * 8
+        );
+        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+
+        tokens.push({
+          mesh,
+          rotSpeedX: (Math.random() - 0.5) * 0.02,
+          rotSpeedY: (Math.random() - 0.5) * 0.02,
+          floatOffset: Math.random() * Math.PI * 2,
+          origY: mesh.position.y,
+          vx: (Math.random() - 0.5) * 0.015,
+          vy: (Math.random() - 0.5) * 0.015
+        });
+        scene.add(mesh);
+      }
+
+      // Mouse interactivity with Three.js tokens (Raycaster)
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(-999, -999);
+      let isMouseDown = false;
+      let activeToken = null;
+
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      });
+
+      window.addEventListener('mousedown', () => {
+        isMouseDown = true;
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(tokens.map(t => t.mesh));
+        if (intersects.length > 0) {
+          activeToken = intersects[0].object;
+          activeToken.scale.set(1.4, 1.4, 1.4);
+          playTone(720, 0.12, "sawtooth");
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (activeToken) {
+          activeToken.scale.set(1, 1, 1);
+          activeToken = null;
+        }
+        isMouseDown = false;
+      });
+
+      // Animation Loop
+      let clock = new THREE.Clock();
+      function animateThree() {
+        requestAnimationFrame(animateThree);
+        const elapsed = clock.getElapsedTime();
+
+        tokens.forEach(t => {
+          t.mesh.rotation.x += t.rotSpeedX;
+          t.mesh.rotation.y += t.rotSpeedY;
+          t.mesh.position.y = t.origY + Math.sin(elapsed * 1.5 + t.floatOffset) * 0.8;
+
+          // Gentle mouse evasion
+          if (mouse.x > -10) {
+            const dist = Math.hypot(t.mesh.position.x - mouse.x * 12, t.mesh.position.y - mouse.y * 8);
+            if (dist < 4.5) {
+              t.mesh.position.x += (t.mesh.position.x - mouse.x * 12) * 0.04;
+              t.mesh.rotation.y += 0.05;
+            }
+          }
+        });
+
+        renderer.render(scene, camera);
+      }
+      animateThree();
+    }
+
+    // --- 5. LIVING MASCOT CURSOR-TRACKING PUPILS & SHADES TOGGLE ---
+    const pupilLeft = document.getElementById('mascot-pupil-left');
+    const pupilRight = document.getElementById('mascot-pupil-right');
+    const mascotStage = document.getElementById('mascot-stage');
+    const mascotShades = document.getElementById('mascot-shades');
+
+    window.addEventListener('mousemove', (e) => {
+      if (!pupilLeft || !pupilRight) return;
+      const rectL = pupilLeft.getBoundingClientRect();
+      const angleL = Math.atan2(e.clientY - (rectL.top + rectL.height/2), e.clientX - (rectL.left + rectL.width/2));
+      const distL = Math.min(6.5, Math.hypot(e.clientX - rectL.left, e.clientY - rectL.top) / 38);
+      pupilLeft.style.transform = `translate(${Math.cos(angleL)*distL}px, ${Math.sin(angleL)*distL}px)`;
+      pupilRight.style.transform = `translate(${Math.cos(angleL)*distL}px, ${Math.sin(angleL)*distL}px)`;
+    });
+
+    if (mascotStage && mascotShades) {
+      let shadesOn = false;
+      mascotStage.addEventListener('click', () => {
+        shadesOn = !shadesOn;
+        if (shadesOn) {
+          mascotShades.classList.remove('scale-0', 'opacity-0');
+          mascotShades.classList.add('scale-100', 'opacity-100');
+          playTone(600, 0.1, "square");
+        } else {
+          mascotShades.classList.remove('scale-100', 'opacity-100');
+          mascotShades.classList.add('scale-0', 'opacity-0');
+          playTone(400, 0.1, "square");
+        }
+      });
+    }
+
+    // --- 6. 3D FLIP CARDS & TILT PHYSICS ON MOUSEMOVE ---
+    const flipCards = document.querySelectorAll('.arena-tilt-card');
+    const flipObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const idx = parseInt(card.getAttribute('data-card-id') || '0', 10);
+          setTimeout(() => {
+            card.classList.remove('init-flipped');
+            card.classList.add('revealed-flipped');
+          }, idx * 100);
+          flipObserver.unobserve(card);
+        }
+      });
+    }, { threshold: 0.2 });
+    flipCards.forEach(c => flipObserver.observe(c));
+
+    flipCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        if (!card.classList.contains('revealed-flipped')) return;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rotY = (x / (rect.width / 2)) * 9;
+        const rotX = -(y / (rect.height / 2)) * 9;
+        card.style.transform = `perspective(1000px) translateY(-14px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale(1.03)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        if (!card.classList.contains('revealed-flipped')) return;
+        card.style.transform = '';
+      });
+    });
+
+    // Slider Next / Prev Controls
+    const sliderContainer = document.getElementById('tracks-slider');
+    const sliderDots = document.querySelectorAll('.slider-dot');
+    const nextBtn = document.getElementById('slider-next-btn');
+    const prevBtn = document.getElementById('slider-prev-btn');
+
+    function getCardStep() {
+      if (!flipCards.length) return 380;
+      return flipCards[0].getBoundingClientRect().width + 32;
+    }
+
+    if (sliderContainer) {
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          sliderContainer.scrollBy({ left: getCardStep(), behavior: 'smooth' });
+          playTone(480, 0.05, "sine");
+        });
+      }
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          sliderContainer.scrollBy({ left: -getCardStep(), behavior: 'smooth' });
+          playTone(440, 0.05, "sine");
+        });
+      }
+      sliderDots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          const idx = parseInt(dot.getAttribute('data-idx') || '0', 10);
+          sliderContainer.scrollTo({ left: idx * getCardStep(), behavior: 'smooth' });
+          playTone(500, 0.05, "sine");
+        });
+      });
+      sliderContainer.addEventListener('scroll', () => {
+        const step = getCardStep();
+        const activeIdx = Math.min(flipCards.length - 1, Math.max(0, Math.round(sliderContainer.scrollLeft / step)));
+        sliderDots.forEach((d, i) => {
+          if (i === activeIdx) {
+            d.classList.add('w-8', 'bg-neon-lime');
+            d.classList.remove('w-2', 'bg-border-raw');
+          } else {
+            d.classList.remove('w-8', 'bg-neon-lime');
+            d.classList.add('w-2', 'bg-border-raw');
+          }
+        });
+      }, { passive: true });
+    }
+
+    // --- 7. RETRO TV CRT CHANNEL SWITCHER (Agency Side Style) ---
+    const tvChannels = [
+      {
+        title: "BOEING 737 SIMULATION",
+        tag: "REC // CH 01 [CASE #104]",
+        status: "SCORE: 94.2% [BOARD APPROVED]",
+        desc: "Managing dual avionics failure leaks, global FAA grounding, and hostile broadcast hearings in an unrelenting 3-hour pressure sprint.",
+        img: "https://lh3.googleusercontent.com/aida/AEtjO1WmYQZj4gJ8-yefjvs2P0p-6rPkHFPKu3JNHTid0uvpazXrCEkA6eVlQ6Py6uqhAHwbMErQpLGLepoekDVvTnV9sH5k-MvhvPSCs3WU3PrJEcAKFI5BBBmCBRXNGTwkJlgWu0PCCd9SIWQ3NCpb1qoDsXJbAH2oY_qHR8xB45hndM72KXklzxCPn1fA6lC4HcRJD1f4q7u3ZKsSYrdcPxJMFz-oKKWjtaZmtow5PWyjQeHLiMGG8cx_PNw"
+      },
+      {
+        title: "WEWORK CAPITAL MELT",
+        tag: "REC // CH 02 [CASE #082]",
+        status: "SCORE: 98.6% [RECORD BREAKER]",
+        desc: "Softbank board mutiny defense with zero prepared slides and sudden secondary valuation drop announcements during live Tokyo market open.",
+        img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBtV93zrNRc8XJge8Gj3REKWFgEMu9lUxKaBDSfosK8WePyec0M8Lb9Dkt4Lq4Gi8M893HPrt95H1j338psO7MCppZ00Y_5nNml9xeoE9lK3VbUShpb98a8j32T1frQJFDC_D7cVGdeSgbdleDtl072iVAm3C6DZutcLZz8F9GQ01PQrlFObIy0KrtSKn7qa5R8LyXWCQmnv-YnOqUO3X6QNrFVvNvRIPoY5vFJ81GrGAFyTByn1ZiUJfoPIe3NpiuP7Q"
+      },
+      {
+        title: "AUTONOMOUS FLEET RECALL",
+        tag: "REC // CH 03 [CASE #091]",
+        status: "SCORE: 88.7% [STAKEHOLDER CLEARED]",
+        desc: "Sensor telemetry glitch during peak city operations. Crisis team deployed live televised public mitigation strategy under 48 hostile journalist queries.",
+        img: "https://lh3.googleusercontent.com/aida/AEtjO1WQIaLaMIUt878KqiGMXOgMFv5uDBOqhM28xz3xmkYRIlB3XKW4dkAqD0ty0fOMGddWsS4pmrbJZkqLhofGjUxuN-pvvcX__gHZiq7zCNW_JR7j5q9B0L5V53PjSUfJk2ahuyHn9_PuSR5dC4YoxJpW-bFl6_IRbb25VDvRGkJQ4LowKIpU2rqkC-EaIJUW0fe3wHHCoFJ9YYAsCus9tcUgWzNvHidXJsNI7MahM5hF5XPmk-OOBNpQh9A"
+      }
+    ];
+
+    const tvImg = document.getElementById('tv-screen-img');
+    const tvTag = document.getElementById('tv-channel-tag');
+    const tvStatus = document.getElementById('tv-status-tag');
+    const tvTitle = document.getElementById('tv-case-title');
+    const tvDesc = document.getElementById('tv-case-desc');
+    const tvBtns = document.querySelectorAll('.tv-channel-btn');
+
+    tvBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ch = parseInt(btn.getAttribute('data-channel') || '0', 10);
+        tvBtns.forEach(b => {
+          b.classList.remove('active', 'bg-neon-lime', 'text-obsidian-deep');
+          b.classList.add('bg-obsidian-card', 'text-text-chalk');
+        });
+        btn.classList.add('active', 'bg-neon-lime', 'text-obsidian-deep');
+        btn.classList.remove('bg-obsidian-card', 'text-text-chalk');
+
+        // CRT channel glitch effect
+        if (tvImg) {
+          tvImg.style.opacity = '0.2';
+          playTone(240, 0.08, "sawtooth");
+          setTimeout(() => {
+            const data = tvChannels[ch];
+            tvImg.src = data.img;
+            tvTag.textContent = data.tag;
+            tvStatus.textContent = data.status;
+            tvTitle.textContent = data.title;
+            tvDesc.textContent = data.desc;
+            tvImg.style.opacity = '1';
+          }, 120);
+        }
+      });
+    });
+
+    // --- 8. PSYCHOMETRIC VIBE SELECTION ---
+    const vibeCards = document.querySelectorAll('.vibe-card');
+    const vibeQuoteBox = document.getElementById('vibe-quote-box');
+    const vibeQuotes = {
+      aggressor: '"You belong in the hostile journalist press gallery. Unrelenting cross-examination, high velocity, and zero sugarcoating."',
+      architect: '"You are the calm crisis architect. High emotional control, logical reframing, and calculated boardroom defense under extreme heat."',
+      lightning: '"You thrive on spontaneous chaos. Lightning rebuttals, humorous deflection, and instant crowd winning in rapid-fire 60s rounds."'
+    };
+
+    vibeCards.forEach(card => {
+      card.addEventListener('click', () => {
+        vibeCards.forEach(c => {
+          c.classList.remove('active');
+          const circle = c.querySelector('div');
+          circle.classList.remove('scale-110', '-rotate-3');
+          const txt = c.querySelector('span');
+          txt.classList.remove('font-black', 'underline');
+        });
+        card.classList.add('active');
+        const circle = card.querySelector('div');
+        circle.classList.add('scale-110', '-rotate-3');
+        const txt = card.querySelector('span');
+        txt.classList.add('font-black', 'underline');
+
+        const v = card.getAttribute('data-vibe') || 'architect';
+        if (vibeQuoteBox) {
+          vibeQuoteBox.style.opacity = '0.5';
+          setTimeout(() => {
+            vibeQuoteBox.textContent = vibeQuotes[v];
+            vibeQuoteBox.style.opacity = '1';
+          }, 120);
+        }
+      });
+    });
+
+    // --- 9. STAGGERED STAT NUMBER COUNTERS ---
+    const statNumbers = document.querySelectorAll('.counter-num');
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          statNumbers.forEach((num, i) => {
+            const target = parseInt(num.getAttribute('data-target') || '0', 10);
+            const suffix = num.getAttribute('data-suffix') || '';
+            let current = 0;
+            const steps = 24;
+            const inc = target / steps;
+            setTimeout(() => {
+              const timer = setInterval(() => {
+                current += inc;
+                if (current >= target) {
+                  num.textContent = target + suffix;
+                  clearInterval(timer);
+                } else {
+                  num.textContent = Math.floor(current) + suffix;
+                }
+              }, 40);
+            }, i * 70);
+          });
+          statObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    const statsContainer = document.getElementById('stats-counter-wrapper');
+    if (statsContainer) statObserver.observe(statsContainer);
+
+    // --- 10. DIRECTORY DRAWER & MODAL TRIGGERS ---
+    const directoryDrawer = document.getElementById('directory-drawer');
+    const openMenuBtn = document.getElementById('open-menu-btn');
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    const drawerLinks = document.querySelectorAll('.drawer-link');
+
+    if (openMenuBtn && directoryDrawer) {
+      openMenuBtn.addEventListener('click', () => {
+        directoryDrawer.classList.remove('hidden');
+        directoryDrawer.classList.add('flex');
+        playTone(550, 0.08, "triangle");
+      });
+    }
+    if (closeMenuBtn && directoryDrawer) {
+      closeMenuBtn.addEventListener('click', () => {
+        directoryDrawer.classList.add('hidden');
+        directoryDrawer.classList.remove('flex');
+        playTone(350, 0.08, "triangle");
+      });
+    }
+    drawerLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        directoryDrawer.classList.add('hidden');
+        directoryDrawer.classList.remove('flex');
+      });
+    });
+
+    // Audition Modal
+    const auditionModal = document.getElementById('audition-modal');
+    const enterArenaBtn = document.getElementById('enter-arena-btn');
+    const mascotCtaBtn = document.getElementById('mascot-cta-btn');
+    const vibeSubmitBtn = document.getElementById('vibe-submit-btn');
+    const closeAuditionBtn = document.getElementById('close-audition-btn');
+    const auditionForm = document.getElementById('audition-form');
+
+    function openModal() {
+      if (auditionModal) {
+        auditionModal.classList.remove('hidden');
+        auditionModal.classList.add('flex');
+        playTone(600, 0.1, "triangle");
+      }
+    }
+    function closeModal() {
+      if (auditionModal) {
+        auditionModal.classList.add('hidden');
+        auditionModal.classList.remove('flex');
+        playTone(320, 0.08, "triangle");
+      }
+    }
+
+    if (enterArenaBtn) enterArenaBtn.addEventListener('click', openModal);
+    if (mascotCtaBtn) mascotCtaBtn.addEventListener('click', openModal);
+    if (vibeSubmitBtn) vibeSubmitBtn.addEventListener('click', openModal);
+    if (closeAuditionBtn) closeAuditionBtn.addEventListener('click', closeModal);
+
+    if (auditionForm) {
+      auditionForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        playTone(880, 0.25, "sine");
+        alert("TRANSMISSION LOGGED: Your dossier has been routed to the IMPULSE Crisis Council. Prepare for flight.");
+        closeModal();
+      });
+    }
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (directoryDrawer && !directoryDrawer.classList.contains('hidden')) {
+          directoryDrawer.classList.add('hidden');
+          directoryDrawer.classList.remove('flex');
+        }
+        if (auditionModal && !auditionModal.classList.contains('hidden')) {
+          closeModal();
+        }
+      }
+    });
+
+    // Reveal on scroll observer for text mask lines
+    const textReveals = document.querySelectorAll('.reveal-up');
+    const textObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-inview');
+        }
+      });
+    }, { threshold: 0.15 });
+    textReveals.forEach(el => textObserver.observe(el));
+  </script>
+</body>
+</html>

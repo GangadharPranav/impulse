@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+:root {
+  /* ISB Iconic Palette */
+  --isb-navy: #0F1E4A;          /* Deep navy text and headers */
+  --isb-blue: #192890;          /* Royal blue buttons and primary action */
+  --isb-teal: #00A896;          /* ISB Aquamarine link highlight */
+  --isb-cyan: #22B3B8;          /* IMPULSE Signature Cyan */
+  --isb-gold: #C89D42;          /* Institutional Gold */
+  --isb-surface: #F8FAFC;       /* Soft Pearl/Slate card background */
+  --isb-border: #E2E8F0;        /* Fine divider hairline */
+  --isb-muted: #64748B;         /* Secondary slate text */
+  --isb-dark: #071126;          /* Darkest navy footer */
+}
+
+@theme {
+  --color-isb-navy: var(--isb-navy);
+  --color-isb-blue: var(--isb-blue);
+  --color-isb-teal: var(--isb-teal);
+  --color-isb-cyan: var(--isb-cyan);
+  --color-isb-gold: var(--isb-gold);
+  --color-isb-surface: var(--isb-surface);
+  --color-isb-border: var(--isb-border);
+  --color-isb-muted: var(--isb-muted);
+  --color-isb-dark: var(--isb-dark);
+
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-space-mono), monospace;
+}
+
+html {
+  background-color: #FFFFFF;
+  color: #0F1E4A;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #0F1E4A;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ISB Editorial Typography Standards */
+.bannerFont {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.isb-serif {
+  font-family: var(--font-serif);
+}
+
+.isb-sans {
+  font-family: var(--font-sans);
+}
+
+/* ISB Signature Tertiary Action Links */
+.tertiaryAquamarine {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #00A896;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.tertiaryAquamarine:hover {
+  color: #0F1E4A;
+}
+
+.tertiaryBlue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #192890;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.tertiaryBlue:hover {
+  color: #00A896;
+}
+
+/* Calendar Date Tag (ISB Event Badge Standard) */
+.tagDate {
+  width: 52px;
+  height: 52px;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* 3D Kinetic & Logo Physics (E-Cell IIT Bombay Signature) */
+@keyframes emblem-float {
+  0%, 100% {
+    transform: translateY(0px) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotateY(8deg);
+  }
+}
+
+@keyframes emblem-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes emblem-reverse-spin {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-emblem-float {
+  animation: emblem-float 6s ease-in-out infinite;
+}
+
+.animate-emblem-spin {
+  animation: emblem-spin 22s linear infinite;
+}
+
+.animate-emblem-reverse-spin {
+  animation: emblem-reverse-spin 16s linear infinite;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Hide Next.js Dev Indicator */
+[data-nextjs-dev-indicator],
+[data-nextjs-toast],
+nextjs-portal,
+#nextjs-dev-indicator,
+div[data-nextjs-portal] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
