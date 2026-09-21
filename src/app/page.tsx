@@ -10,56 +10,76 @@ import IsbEventsSection from "@/components/sections/IsbEventsSection";
 import SpeakersSection from "@/components/sections/SpeakersSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import FooterSection from "@/components/sections/FooterSection";
+import ClientExperience from "@/components/ClientExperience";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-white text-[#033744] flex flex-col w-full selection:bg-[#22B3B8] selection:text-[#033744]">
+    <div className="relative min-h-screen bg-[#050e12] text-[#E8EEF0] flex flex-col w-full selection:bg-[#22B3B8] selection:text-[#033744]">
+      {/* 00 // Client 3D Canvas, Anime.js Orchestrator & Kinetic Cyan Cursor */}
+      <ClientExperience />
+
       {/* 01 // Fixed Navigation Masthead (Dual-tier ISB prestige with IMPULSE logo) */}
       <Navbar />
 
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full relative z-10">
         {/* 02 // Hero Section: Text on Left, Slowly Rotating 3D IMPULSE Logo on Right */}
         <HeroSection />
 
         {/* 03 // Single Kinetic Ticker Ribbon (Cyan on Abyss) */}
-        <MarqueeRibbon
-          items={[
-            "THINK. ARGUE. DECIDE.",
-            "BVRIT NARSAPUR • ESTD. 2024",
-            "CASE STUDY & GROUP DISCUSSION CLUB",
-            "LIVE BOARDROOM CRISIS WAR ROOM",
-            "UNSCRIPTED DEBATE ARENA",
-            "EXECUTIVE INTELLECT FORGED HERE",
-            "MCKINSEY • BCG • BAIN PEDAGOGY",
-            "₹1,50,000+ CONCLAVE PRIZE POOL",
-          ]}
-          speed={32}
-          className="bg-[#02252E] border-y border-[#22B3B8]/30 text-white"
-        />
+        <div data-anime="ribbon">
+          <MarqueeRibbon
+            items={[
+              "THINK. ARGUE. DECIDE.",
+              "BVRIT NARSAPUR • ESTD. 2024",
+              "CASE STUDY & GROUP DISCUSSION CLUB",
+              "LIVE BOARDROOM CRISIS WAR ROOM",
+              "UNSCRIPTED DEBATE ARENA",
+              "EXECUTIVE INTELLECT FORGED HERE",
+              "MCKINSEY • BCG • BAIN PEDAGOGY",
+              "₹1,50,000+ CONCLAVE PRIZE POOL",
+            ]}
+            speed={32}
+            className="bg-[#02252E] border-y border-[#22B3B8]/30 text-white"
+          />
+        </div>
 
-        {/* 04 // Audited Impact & Real-time Metrics (Animated Counters in Cyan/Teal/Abyss) */}
+        {/* 04 // Audited Impact & Real-time Metrics (Anime.js Count-ups & 3D Depth) */}
         <ImpactSection />
 
         {/* 05 // Corporate Alliances & Pedagogy Benchmarks (McKinsey, BCG, Bain, Harvard) */}
-        <IsbAccreditationsSection />
+        <div data-anime="reveal">
+          <IsbAccreditationsSection />
+        </div>
 
         {/* 06 // Foundations of Excellence: 3 Institutional Pillars */}
-        <IsbPillarsSection />
+        <div data-anime="reveal">
+          <IsbPillarsSection />
+        </div>
 
         {/* 07 // Signature ISB Interactive Intent Filter: 'What brings you here?' */}
-        <WhatBringsYouHereSection />
+        <div data-anime="reveal">
+          <WhatBringsYouHereSection />
+        </div>
 
         {/* 08 // Multi-Track Core Initiatives (6 Distinct Non-Repeating Flagships) */}
-        <InitiativesSection />
+        <div data-anime="reveal">
+          <InitiativesSection />
+        </div>
 
         {/* 09 // Campus Calendar & Events with ISB Date Badges [ MAR 14 ] */}
-        <IsbEventsSection />
+        <div data-anime="reveal">
+          <IsbEventsSection />
+        </div>
 
         {/* 10 // Luminary Keynote Speakers & Executive Mentors */}
-        <SpeakersSection />
+        <div data-anime="reveal">
+          <SpeakersSection />
+        </div>
 
         {/* 11 // Executive Testimonials & MBB Alumni Wall of Fame */}
-        <TestimonialsSection />
+        <div data-anime="reveal">
+          <TestimonialsSection />
+        </div>
       </main>
 
       {/* 12 // Institutional Dual-Campus Footer (BVRIT Headquarters & Hyderabad Secretariat) */}

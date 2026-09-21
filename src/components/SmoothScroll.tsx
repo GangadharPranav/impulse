@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollStore } from "@/hooks/useScrollProgress";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,7 +28,12 @@ export default function SmoothScroll({
       touchMultiplier: 1.5,
     });
 
-    lenis.on("scroll", ScrollTrigger.update);
+    lenis.on("scroll", (e: { scroll: number }) => {
+      ScrollTrigger.update();
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? Math.min(1, Math.max(0, e.scroll / maxScroll)) : 0;
+      useScrollStore.getState().setProgress(progress, e.scroll);
+    });
 
     const updateTicker = (time: number) => {
       lenis.raf(time * 1000);
