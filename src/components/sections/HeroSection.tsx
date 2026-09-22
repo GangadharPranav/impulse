@@ -15,6 +15,8 @@ const HeroAnimeEntrance = dynamic(
 // Headline split into individually-animated words
 const HEADLINE_WORDS = ["The", "future", "belongs", "to", "those", "who", "create", "it."];
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export default function HeroSection() {
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -30,7 +32,7 @@ export default function HeroSection() {
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ opacity: 0.45 }}
         >
-          <source src="/videos/hero-bg.mp4" type="video/mp4" />
+          <source src={`${basePath}/videos/hero-bg.mp4`} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-[#050e12]/50" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#050e12]/85 via-[#050e12]/30 to-transparent" />
@@ -146,7 +148,7 @@ export default function HeroSection() {
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 backdrop-blur-md">
           <div className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border border-[#22B3B8]/40 shadow-2xl bg-black">
             <iframe
-              src="/videos/hero-bg.mp4#t=0"
+              src={`${basePath}/videos/hero-bg.mp4#t=0`}
               title="IMPULSE Verbal Nexus Showcase"
               allow="autoplay; fullscreen"
               className="w-full h-full"
