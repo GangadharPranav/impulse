@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import StarField from "./StarField";
-import EmblemCore from "./EmblemCore";
 import Effects from "./Effects";
 
 export default function ImpulseScene() {
@@ -61,7 +60,6 @@ export default function ImpulseScene() {
 
         <Suspense fallback={null}>
           <StarField count={isMobile ? 500 : 1200} />
-          <EmblemCore />
           {!isMobile && <Effects />}
         </Suspense>
       </Canvas>
