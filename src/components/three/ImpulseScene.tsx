@@ -6,22 +6,20 @@ import StarField from "./StarField";
 import Effects from "./Effects";
 
 export default function ImpulseScene() {
-  const [hasWebGL, setHasWebGL] = useState<boolean>(true);
+  const [hasWebGL] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      const canvas = document.createElement("canvas");
+      return !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
+    } catch {
+      return false;
+    }
+  });
   const [dpr, setDpr] = useState<number>(1.5);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
-    // 1. Check WebGL support
-    try {
-      const canvas = document.createElement("canvas");
-      const gl =
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      if (!gl) setHasWebGL(false);
-    } catch {
-      setHasWebGL(false);
-    }
-
-    // 2. Performance budget: cap DPR (1.5 on desktop, 1.0 on mobile)
+    // Performance budget: cap DPR (1.5 on desktop, 1.0 on mobile)
     const mobile = window.innerWidth < 768;
     setIsMobile(mobile);
     setDpr(mobile ? 1.0 : Math.min(window.devicePixelRatio, 1.5));

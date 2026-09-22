@@ -19,17 +19,23 @@ export default function StarField({ count = 1200 }: { count?: number }) {
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
+      // Deterministic pseudo-random generation to adhere to React purity rules
+      const r1 = Math.abs(Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1;
+      const r2 = Math.abs(Math.sin((i + 1) * 39.346 + 11.135) * 43758.5453) % 1;
+      const r3 = Math.abs(Math.sin((i + 2) * 73.156 + 54.213) * 43758.5453) % 1;
+      const r4 = Math.abs(Math.sin((i + 3) * 91.827 + 29.471) * 43758.5453) % 1;
+
       // Spread across a cylindrical volume
-      const radius = 8 + Math.random() * 24;
-      const theta = Math.random() * Math.PI * 2;
-      const y = (Math.random() - 0.5) * 35;
+      const radius = 8 + r1 * 24;
+      const theta = r2 * Math.PI * 2;
+      const y = (r3 - 0.5) * 35;
 
       pos[i3] = Math.cos(theta) * radius;
       pos[i3 + 1] = y;
-      pos[i3 + 2] = (Math.random() - 0.5) * 20 - 4;
+      pos[i3 + 2] = (r4 - 0.5) * 20 - 4;
 
       // Color variation: clean stars
-      const r = Math.random();
+      const r = r1;
       const c = r > 0.7 ? ice : r > 0.4 ? softCyan : r > 0.2 ? silver : white;
       col[i3] = c.r;
       col[i3 + 1] = c.g;

@@ -78,7 +78,7 @@ export default function AchievementsSection() {
               <div className="p-8 rounded-2xl border border-impulse-cyan/20 bg-impulse-surface/40 backdrop-blur-sm space-y-3 group-hover:border-impulse-cyan/60 transition-colors">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-mono text-xs font-bold text-impulse-cyan tracking-widest uppercase">
-                    {m.quarter} // {m.year}
+                    {m.quarter} {"//"} {m.year}
                   </span>
                   <span className="font-mono text-[10px] text-impulse-fog/60 tracking-wider uppercase">
                     {m.category}

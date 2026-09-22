@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import FloatingImpulseEmblem from "@/components/FloatingImpulseEmblem";
 
@@ -14,34 +14,46 @@ const HeroAnimeEntrance = dynamic(
 // Headline split into individually-animated words
 const HEADLINE_WORDS = ["The", "future", "belongs", "to", "those", "who", "create", "it."];
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-
 export default function HeroSection() {
-  const [isPlaying, setIsPlaying] = useState(false);
 
   return (
     <section className="relative min-h-[92vh] sm:min-h-screen w-full flex items-center justify-center pt-28 pb-16 bg-[#050e12] text-white overflow-hidden">
       {/* Anime.js entrance timeline — fires on mount */}
       <HeroAnimeEntrance />
 
-      {/* ── 01: Background Layer: Video with Pure Neutral Contrast Scrim ── */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ opacity: 0.75 }}
-        >
-          <source src={`${basePath}/videos/hero-bg.mp4`} type="video/mp4" />
-        </video>
-        {/* Pure neutral dark scrim on the left ONLY for text contrast — zero green tint */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
-        {/* Soft bottom transition into page background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050e12]" />
+      {/* ── 01: Background Layer: Brand-Illuminated IMPULSE Logo Artwork ── */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+        {/* Radial ambient glow source */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[900px] h-[700px] sm:h-[900px] rounded-full bg-gradient-to-tr from-[#033744]/60 via-[#08747E]/30 to-[#22B3B8]/15 blur-[120px] pointer-events-none" />
+
+        {/* Outer subtle orbital rings */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[850px] aspect-square rounded-full border border-[#22B3B8]/10 animate-[spin_120s_linear_infinite]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] sm:w-[680px] aspect-square rounded-full border border-dashed border-[#1E9EA9]/15 animate-[spin_80s_linear_infinite_reverse]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] sm:w-[500px] aspect-square rounded-full border border-[#22B3B8]/20" />
+
+        {/* Giant Monochromatic Watermarked IMPULSE Logo in Background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] sm:w-[620px] aspect-square opacity-[0.14] mix-blend-screen filter drop-shadow-[0_0_80px_rgba(34,179,184,0.45)]">
+          <Image
+            src="/logo.png"
+            alt="IMPULSE Watermark Emblem"
+            fill
+            priority
+            className="object-contain"
+          />
+        </div>
+
+        {/* Architectural Tech Grid & Ambient Scrims */}
+        <div 
+          className="absolute inset-0 opacity-[0.04]" 
+          style={{
+            backgroundImage: `radial-gradient(#22B3B8 1px, transparent 1px)`,
+            backgroundSize: "36px 36px"
+          }} 
+        />
+        
+        {/* Directional contrast scrims for maximum typography clarity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050e12]/95 via-[#050e12]/75 to-[#050e12]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050e12] via-transparent to-[#050e12]/60" />
       </div>
 
       {/* ── 03: Two-Column Container ── */}
@@ -85,39 +97,33 @@ export default function HeroSection() {
               strategic decision-makers for global enterprises.
             </p>
 
-            {/* CTAs */}
+            {/* CTAs pointing to multi-page routes */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link
-                href="#what-brings-you-here"
+                href="/events"
                 data-hero="cta"
                 className="bg-[#22B3B8] hover:bg-[#3FE3E8] text-[#033744] text-xs sm:text-sm font-mono font-bold tracking-wider uppercase px-8 py-3.5 rounded-full transition-all duration-300 shadow-[0_0_25px_rgba(34,179,184,0.4)] flex items-center gap-2"
               >
-                <span>Explore Opportunities</span>
+                <span>Explore Events &amp; Conclaves</span>
                 <span className="font-bold">&rarr;</span>
               </Link>
 
               <Link
-                href="#initiatives"
+                href="/about"
                 data-hero="cta"
                 className="bg-[#033744]/80 hover:bg-[#033744] border border-[#22B3B8]/40 hover:border-[#22B3B8] text-white text-xs sm:text-sm font-mono font-semibold tracking-wider uppercase px-7 py-3.5 rounded-full transition-all duration-300 backdrop-blur-sm"
               >
-                Flagship Tracks
+                About Our Pedagogy
               </Link>
 
-              <div data-hero="cta" className="flex items-center gap-2.5 pl-1 sm:pl-2">
-                <button
-                  onClick={() => setIsPlaying(true)}
-                  aria-label="Play Introduction Video"
-                  className="w-11 h-11 rounded-full bg-[#22B3B8] text-[#033744] flex items-center justify-center shadow-[0_0_20px_rgba(34,179,184,0.5)] hover:scale-110 hover:bg-white transition-all duration-300 group"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-                <span className="text-xs font-mono font-bold tracking-wider text-[#E8EEF0] uppercase hidden sm:inline-block">
-                  Conclave Film
-                </span>
-              </div>
+              <Link
+                href="/winners"
+                data-hero="cta"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#033744]/40 hover:bg-[#033744] border border-[#22B3B8]/30 hover:border-[#22B3B8] text-[#3FE3E8] text-xs font-mono tracking-wider uppercase transition-all duration-300"
+              >
+                <span className="text-amber-400">🏆</span>
+                <span>Hall of Winners</span>
+              </Link>
             </div>
 
             {/* Stat Strip */}
@@ -143,26 +149,6 @@ export default function HeroSection() {
 
         </div>
       </div>
-
-      {/* Video Modal */}
-      {isPlaying && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 backdrop-blur-md">
-          <div className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border border-[#22B3B8]/40 shadow-2xl bg-black">
-            <iframe
-              src={`${basePath}/videos/hero-bg.mp4#t=0`}
-              title="IMPULSE Verbal Nexus Showcase"
-              allow="autoplay; fullscreen"
-              className="w-full h-full"
-            />
-            <button
-              onClick={() => setIsPlaying(false)}
-              className="absolute top-4 right-4 text-white bg-[#033744] hover:bg-[#22B3B8] hover:text-[#033744] p-2 rounded-full font-bold transition-colors"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
