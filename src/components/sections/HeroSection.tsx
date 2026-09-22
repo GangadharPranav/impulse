@@ -4,7 +4,6 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import FloatingImpulseEmblem from "@/components/FloatingImpulseEmblem";
-import ParticleCanvas from "@/components/ParticleCanvas";
 
 // Render-less anime.js timeline orchestrator (client-only, no SSR)
 const HeroAnimeEntrance = dynamic(
@@ -25,23 +24,25 @@ export default function HeroSection() {
       {/* Anime.js entrance timeline — fires on mount */}
       <HeroAnimeEntrance />
 
-      {/* ── 01: Background Layer: Video + Atmospheric Scrims ── */}
+      {/* ── 01: Background Layer: Video with Pure Neutral Contrast Scrim ── */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <video
-          autoPlay muted loop playsInline preload="auto" aria-hidden="true"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ opacity: 0.45 }}
+          style={{ opacity: 0.75 }}
         >
           <source src={`${basePath}/videos/hero-bg.mp4`} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-[#050e12]/50" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050e12]/85 via-[#050e12]/30 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050e12]/75 via-transparent to-[#050e12]" />
-        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-[550px] h-[550px] bg-[#22B3B8]/15 rounded-full blur-[160px] pointer-events-none" />
+        {/* Pure neutral dark scrim on the left ONLY for text contrast — zero green tint */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
+        {/* Soft bottom transition into page background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050e12]" />
       </div>
-
-      {/* ── 02: Interactive 3D Particle Constellation ── */}
-      <ParticleCanvas />
 
       {/* ── 03: Two-Column Container ── */}
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 xl:px-12 w-full z-10 py-6">

@@ -78,11 +78,11 @@ export default function FloatingImpulseEmblem() {
         <span className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#22B3B8] shadow-[0_0_12px_#22B3B8]" />
       </div>
 
-      {/* Volumetric Radial Ambient Aura (Sampled from Logo Gradient) */}
+      {/* Clean Neutral Ambient Shadow */}
       <div
-        className="absolute inset-6 rounded-full bg-gradient-to-tr from-[#08747E]/30 via-[#22B3B8]/20 to-transparent blur-3xl pointer-events-none transition-all duration-500"
+        className="absolute inset-6 rounded-full bg-black/50 blur-2xl pointer-events-none transition-all duration-500"
         style={{
-          transform: isHovered ? "scale(1.2)" : "scale(1)",
+          transform: isHovered ? "scale(1.1)" : "scale(1)",
         }}
       />
 

@@ -12,10 +12,10 @@ export default function StarField({ count = 1200 }: { count?: number }) {
   const { positions, colors } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
-    const cyan = new THREE.Color("#22B3B8");
-    const lightCyan = new THREE.Color("#3FE3E8");
+    const ice = new THREE.Color("#D4F5F7");
+    const softCyan = new THREE.Color("#6EE7EB");
     const white = new THREE.Color("#FFFFFF");
-    const deepTeal = new THREE.Color("#08747E");
+    const silver = new THREE.Color("#E8EEF0");
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
@@ -28,9 +28,9 @@ export default function StarField({ count = 1200 }: { count?: number }) {
       pos[i3 + 1] = y;
       pos[i3 + 2] = (Math.random() - 0.5) * 20 - 4;
 
-      // Color variation
+      // Color variation: clean stars
       const r = Math.random();
-      const c = r > 0.6 ? cyan : r > 0.35 ? lightCyan : r > 0.15 ? deepTeal : white;
+      const c = r > 0.7 ? ice : r > 0.4 ? softCyan : r > 0.2 ? silver : white;
       col[i3] = c.r;
       col[i3 + 1] = c.g;
       col[i3 + 2] = c.b;
